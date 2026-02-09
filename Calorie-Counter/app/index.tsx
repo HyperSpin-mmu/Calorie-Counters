@@ -9,7 +9,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Count your calories!</Text>
+      <Text>I am testing the app!</Text>
       <Text>This is the main screen of the Calorie Counter app.</Text>
     </View>
   );
