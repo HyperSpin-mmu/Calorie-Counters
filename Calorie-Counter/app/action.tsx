@@ -1,9 +1,10 @@
-import { useCameraPermissions, CameraView, BarcodeScanningResult } from 'expo-camera';
+import { useCameraPermissions, CameraView, BarcodeScanningResult, scanFromURLAsync } from 'expo-camera';
 import { useCallback, useRef } from 'react';
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 
 export default function BarcodeScanner() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -55,7 +56,12 @@ export default function BarcodeScanner() {
         style={styles.camera} 
         facing={'back'}
         barcodeScannerSettings={{ barcodeTypes: ["ean8", "ean13"] }}
-      />
+      >
+
+        <View style={styles.overlay}>
+          <View style={styles.scannerFrame} />
+        </View>
+      </CameraView>
     </View>
   );
 }
@@ -96,4 +102,18 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: 'white',
   },
+  overlay : {
+    flex: 1,
+    backgroundColor: "transparent",
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scannerFrame: {
+  width: 320,
+  height: 250,
+  borderColor: 'white',
+  borderWidth: 3,
+  borderRadius: 30,
+  borderStyle: 'solid',
+}
 });
