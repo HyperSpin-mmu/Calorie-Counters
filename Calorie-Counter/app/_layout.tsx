@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
@@ -6,7 +7,31 @@ import * as SplashScreen from 'expo-splash-screen';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
+const barButton = ({ children, onPress }) => (
+  <TouchableOpacity
+    style={{
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+    onPress={onPress}
+  >
+    <View
+      style={{
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        backgroundColor: '#1375b2',
+      }}
+    >
+      {children}
+    </View>
+  </TouchableOpacity>
+);
+
 export default function RootLayout() {
+
+  const router = useRouter();
+
   const [loaded, error] = useFonts({
     'GoogleSans': require("../assets/fonts/GoogleSans-Regular.ttf"),
   });
@@ -17,32 +42,22 @@ export default function RootLayout() {
     }
   }, [loaded, error]);
 
-  const barButton = ({ children, onPress }) => (
-    <TouchableOpacity
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-      onPress={onPress}
-    >
-      <View
-        style={{
-          width: 70,
-          height: 70,
-          borderRadius: 35,
-          backgroundColor: '#1375b2',
-        }}
-      >
-        {children}
-      </View>
-    </TouchableOpacity>
-);
+  const handleButtonPress = () => {
+    router.navigate('/action');
 
   return (
     <Tabs 
       screenOptions={{ 
         headerShown: false,
         tabBarActiveTintColor: '#262525', 
+        tabBarStyle: {
+          position: 'absolute',
+          height: 60,
+          bottom: 20,
+          left: 20,
+          right: 20,
+          borderRadius: 15,
+        }
       }}
     >
       <Tabs.Screen
