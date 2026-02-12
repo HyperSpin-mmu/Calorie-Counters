@@ -1,11 +1,9 @@
 import { Text, View, StyleSheet } from "react-native";
 
-let dateTime = new Date();
-
-export default function Index() {
+export default function SearchScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Main page!</Text>
+      <Text style={styles.title}>Action!</Text>
     </View>
   );
 }
@@ -13,14 +11,11 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    fontSize: 24,
     justifyContent: "center",
     alignItems: "center",
-    fontFamily: "GoogleSans",
   },
   title: {
     fontSize: 28,
     fontFamily: "GoogleSans",
-    textAlign: "center",
   }
 });
