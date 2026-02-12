@@ -5,7 +5,7 @@ let dateTime = new Date();
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to MacroTracker</Text>
+      <Text style={styles.title}>Main page</Text>
     </View>
   );
 }
