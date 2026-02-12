@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet } from "react-native";
 
-export default function SearchScreen() {
+export default function FoodDiary() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Diary</Text>
