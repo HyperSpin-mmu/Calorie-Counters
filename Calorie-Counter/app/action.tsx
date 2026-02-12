@@ -1,16 +1,16 @@
 import { Tabs } from 'expo-router';
 import { useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { CameraView, CameraType, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 
-export default function barcodeScanner() {
+export default function BarcodeScanner() {
   const [permission, requestPermission] = useCameraPermissions();
-  const [barcodeId, setBarcodeId] = useState<string | null>(null);
+  const isScanning = useRef(false);
   const router = useRouter();
 
   if (!permission) {
@@ -27,29 +27,29 @@ export default function barcodeScanner() {
   }
 
   const handleBarcodeScanned = ({ type, data }: BarcodeScanningResult) => {
-    setBarcodeId(data)
+
+    if (isScanning.current) {
+      return;
+    }
+
+    isScanning.current = true;
+
+    console.log(`Scanned barcode with type ${type} and data ${data}`);
+    router.navigate('/'); 
   };
 
-return (
-  <View style={styles.container}>
-    {!barcodeId ? (
+  return (
+    <View style={styles.container}>
       <CameraView 
+        onBarcodeScanned={handleBarcodeScanned}
         style={styles.camera} 
         facing={'back'}
-        onBarcodeScanned={handleBarcodeScanned}
         barcodeScannerSettings={{
-          barcodeTypes: ["ean8","ean13"],
+          barcodeTypes: ["ean8", "ean13"],
         }}
       />
-    ) : (
-      <View style={styles.resultContainer}>
-        <Text>Scanned ID: {barcodeId}</Text>
-        <Button title="Scan Again" onPress={() => setBarcodeId(null)} />
-        router.navigate('/index')
-      </View>
-    )}
-  </View>
-);
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
