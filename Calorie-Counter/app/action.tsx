@@ -1,7 +1,7 @@
-import { Tabs } from 'expo-router';
+import { Tabs, useFocusEffect } from 'expo-router';
 import { useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { CameraView, CameraType, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
@@ -13,6 +13,14 @@ export default function BarcodeScanner() {
   const isScanning = useRef(false);
   const router = useRouter();
 
+  useFocusEffect(
+    useCallback(() => {
+      isScanning.current = false;
+  }, [])
+  );
+
+
+
   if (!permission) {
     return <View />;
   }
@@ -21,21 +29,17 @@ export default function BarcodeScanner() {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Button onPress={requestPermission} title="Grant permission" />
       </View>
     );
   }
 
   const handleBarcodeScanned = ({ type, data }: BarcodeScanningResult) => {
-
-    if (isScanning.current) {
-      return;
-    }
-
+    if (isScanning.current) return;
     isScanning.current = true;
 
     console.log(`Scanned barcode with type ${type} and data ${data}`);
-    router.navigate('/'); 
+    router.replace('/'); 
   };
 
   return (

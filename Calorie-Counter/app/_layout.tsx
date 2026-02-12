@@ -89,6 +89,7 @@ export default function RootLayout() {
           tabBarButton: (props) => (
              <BarButton onPress={handleButtonPress} children={undefined} />
           ),
+          tabBarStyle: {display: 'none' },
         }}
       />
 
