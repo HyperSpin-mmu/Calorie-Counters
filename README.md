@@ -1,0 +1,8 @@
+Hi there! 
+
+To run this, you'll need expo. Please install expo and any .js files needed for it to run
+
+If on a PC at uni, run commands in cmd rather than bash.
+Follow expo documentation and make a branch please.
+
+-Team leader, Ben.
