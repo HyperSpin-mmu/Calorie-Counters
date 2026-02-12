@@ -7,9 +7,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
-const barButton = ({ children, onPress }) => (
+
+const BarButton = ({ children, onPress }: { children: any, onPress: any }) => (
   <TouchableOpacity
     style={{
+      top: -20,
       justifyContent: 'center',
       alignItems: 'center',
     }}
@@ -17,13 +19,15 @@ const barButton = ({ children, onPress }) => (
   >
     <View
       style={{
-        width: 70,
-        height: 70,
-        borderRadius: 35,
-        backgroundColor: '#1375b2',
+        width: 60, 
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: '#007AFF',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
-      {children}
+      <MaterialIcons name="add" size={35} color="white" />
     </View>
   </TouchableOpacity>
 );
@@ -44,6 +48,7 @@ export default function RootLayout() {
 
   const handleButtonPress = () => {
     router.navigate('/action');
+  };
 
   return (
     <Tabs 
@@ -51,9 +56,10 @@ export default function RootLayout() {
         headerShown: false,
         tabBarActiveTintColor: '#262525', 
         tabBarStyle: {
-          position: 'absolute',
-          height: 60,
-          bottom: 20,
+          height: 80,
+          paddingBottom: 10,
+          backgroundColor: '#fff',
+          borderTopWidth: 0,
           left: 20,
           right: 20,
           borderRadius: 15,
@@ -79,11 +85,12 @@ export default function RootLayout() {
       <Tabs.Screen
         name="action"
         options={{
-          title: 'Action',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add-circle-outline" color={color} />,
+          tabBarLabel: () => null,
+          tabBarButton: (props) => (
+             <BarButton onPress={handleButtonPress} children={undefined} />
+          ),
         }}
       />
-
 
       <Tabs.Screen
         name="search"
