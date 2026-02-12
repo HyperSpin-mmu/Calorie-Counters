@@ -20,7 +20,13 @@ export default function BarcodeScanner() {
   const handleBarcodeScanned = ({ type, data }: BarcodeScanningResult) => {
     if (isScanning.current) return;
     isScanning.current = true;
-    router.replace('/'); 
+
+    console.log(`Scanned barcode with type ${type} and data ${data}`);
+
+    router.replace({
+      pathname: '/foodAmount',
+      params: { scannedData: data }
+    });
   };
 
   if (!permission) return <View />;

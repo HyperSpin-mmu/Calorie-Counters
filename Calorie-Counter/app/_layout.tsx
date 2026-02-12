@@ -108,6 +108,12 @@ export default function RootLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="more-horiz" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="foodAmount"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
