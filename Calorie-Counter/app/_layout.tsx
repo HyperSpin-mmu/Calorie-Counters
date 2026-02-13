@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
-
+//This is the button in the middle of the tab bar, it is used to navigate to the barcode scanner screen.
 const BarButton = ({ children, onPress }: { children: any, onPress: any }) => (
   <TouchableOpacity
     style={{
@@ -18,6 +18,7 @@ const BarButton = ({ children, onPress }: { children: any, onPress: any }) => (
     onPress={onPress}
   >
     <View
+    // Style for the circular button in the middle of the tab bar.
       style={{
         width: 60, 
         height: 60,
@@ -32,26 +33,32 @@ const BarButton = ({ children, onPress }: { children: any, onPress: any }) => (
   </TouchableOpacity>
 );
 
+// This is the root layout of the app, it contains the tab navigator.
 export default function RootLayout() {
 
+  // EXPO router for navigation between screens. (https://docs.expo.dev/router/introduction/)
   const router = useRouter();
 
+  // Load custom fonts and keep the splash screen visible until the fonts are loaded.
   const [loaded, error] = useFonts({
     'GoogleSans': require("../assets/fonts/GoogleSans-Regular.ttf"),
   });
 
+  // Hide the splash screen once the fonts are loaded or if there is an error.
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
 
+  // Handle the button press to navigate to the barcode scanner screen.
   const handleButtonPress = () => {
     router.navigate('/action');
   };
 
   return (
     <Tabs 
+    // Configure the tab navigator with custom styles and options.
       screenOptions={{ 
         headerShown: false,
         tabBarActiveTintColor: '#262525', 
@@ -65,6 +72,7 @@ export default function RootLayout() {
           borderRadius: 15,
         }
       }}
+      // Define the screens in the tab navigator with their respective options and icons.
     >
       <Tabs.Screen
         name="index"
@@ -111,6 +119,7 @@ export default function RootLayout() {
       <Tabs.Screen
         name="foodAmount"
         options={{
+          // This screen is navigated to from the barcode scanner screen, so we hide it from the tab bar.
           href: null,
         }}
       />

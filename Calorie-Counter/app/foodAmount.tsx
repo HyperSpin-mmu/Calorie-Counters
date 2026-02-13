@@ -2,10 +2,13 @@ import { useLocalSearchParams } from "expo-router";
 import { use, useEffect } from "react";
 import { Text, View, StyleSheet } from "react-native";
 
+// This screen is navigated to from the barcode scanner screen, it receives the scanned data as a parameter and displays it.
 export default function foodAmountScreen() {
 
+  // Get the scanned data from the navigation parameters passed from the barcode scanner screen.
   const scannedData = useLocalSearchParams();
 
+  // Log the received scanned data whenever it changes for debugging purposes.
   useEffect(() => {console.log("Received scanned data:", scannedData); }, [scannedData]);
 
   return (
@@ -17,6 +20,7 @@ export default function foodAmountScreen() {
   );
 }
 
+// Styles for the food amount screen, including the container, title, and message text styles.
 const styles = StyleSheet.create({
   container: {
     flex: 1,

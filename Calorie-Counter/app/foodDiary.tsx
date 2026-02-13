@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet } from "react-native";
 
+// This is the food diary screen, it is currently a placeholder and will be implemented later.
 export default function FoodDiary() {
   return (
     <View style={styles.container}>

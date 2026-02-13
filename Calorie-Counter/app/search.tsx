@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet } from "react-native";
 
+// This screen is for searching food items, it is currently a placeholder and will be implemented later.
 export default function SearchScreen() {
   return (
     <View style={styles.container}>

@@ -1,7 +1,6 @@
 import { Text, View, StyleSheet } from "react-native";
 
-let dateTime = new Date();
-
+// This is the main page of the app, it is the default screen that is shown when the app is opened.
 export default function Index() {
   return (
     <View style={styles.container}>
@@ -10,6 +9,7 @@ export default function Index() {
   );
 }
 
+// Styles for the main page, including the container and title text styles.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
