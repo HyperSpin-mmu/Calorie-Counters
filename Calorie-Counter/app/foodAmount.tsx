@@ -21,7 +21,7 @@ return (
         <View style={styles.headerContent}>
           <TouchableOpacity 
             style={styles.backButton} 
-            onPress={() => router.replace("/")} 
+            onPress={() => router.back()} 
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <MaterialIcons name="arrow-back" size={24} color="black" />
@@ -34,11 +34,8 @@ return (
 
       {/* Main Content Area */}
       <View style={styles.content}>
-        <Text style={styles.title}>Kurt I know you're jealous</Text>
         <Text style={styles.message}>Last Scanned: {scannedData.scannedData}</Text>
-        <Text style={styles.message}>I will just call API here... </Text>
       </View>
-
     </View>
   );
 }

@@ -34,6 +34,7 @@ export default function RootLayout() {
             name="foodAmount" 
             options={{ 
                 headerShown: false, 
+                animation : 'slide_from_right',
             }} 
         />
     </Stack>
