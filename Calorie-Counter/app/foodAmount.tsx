@@ -36,4 +36,22 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: 'black',
   },
+  header: {
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  headerContent: {
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    left: 15, 
+    zIndex: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
