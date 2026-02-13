@@ -51,7 +51,7 @@ export default function RootLayout() {
     }
   }, [loaded, error]);
 
-  // Handle the button press to navigate to the barcode scanner screen.
+  // Handles the button press to navigate to the barcode scanner screen.
   const handleButtonPress = () => {
     router.navigate('/action');
   };

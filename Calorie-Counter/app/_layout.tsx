@@ -28,6 +28,7 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
         
+        {/* The main tab navigator screen, it is the default screen when the app is opened. */}
         <Stack.Screen name="(tabs)" /> 
         
         {/* Food amount screen animations and options */}
