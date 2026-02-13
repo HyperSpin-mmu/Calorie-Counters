@@ -4,7 +4,7 @@ import { Text, View, StyleSheet } from "react-native";
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Main page!</Text>
+      <Text style={styles.title}>Main page</Text>
     </View>
   );
 }

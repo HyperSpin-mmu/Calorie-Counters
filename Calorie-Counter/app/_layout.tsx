@@ -33,10 +33,8 @@ export default function RootLayout() {
         <Stack.Screen 
             name="foodAmount" 
             options={{ 
-            presentation: 'modal',
-            headerShown: true, 
-            title: 'Add Food' 
-        }} 
+                headerShown: false, 
+            }} 
         />
     </Stack>
   );
