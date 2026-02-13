@@ -24,12 +24,13 @@ export default function RootLayout() {
     }
   }, [loaded, error]);
 
-  // 
+  // Handles switching between the tab navigator and pages that do not belong to the navigator. (e.g. the food proportion input screen)
   return (
     <Stack screenOptions={{ headerShown: false }}>
         
         <Stack.Screen name="(tabs)" /> 
         
+        {/* Food amount screen animations and options */}
         <Stack.Screen 
             name="foodAmount" 
             options={{ 

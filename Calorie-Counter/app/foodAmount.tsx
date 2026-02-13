@@ -16,12 +16,13 @@ export default function foodAmountScreen() {
   useEffect(() => {console.log("Received scanned data:", scannedData); }, [scannedData]);
 
 return (
+  // Main container for the food amount screen, it includes a header with a back button and a title, and a content area to display the scanned data.
     <View style={styles.container}>
       <SafeAreaView style={styles.header} edges={['top']}>
         <View style={styles.headerContent}>
           <TouchableOpacity 
             style={styles.backButton} 
-            onPress={() => router.back()} 
+            onPress={() => router.navigate('/')} 
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <MaterialIcons name="arrow-back" size={24} color="black" />
@@ -34,13 +35,14 @@ return (
 
       {/* Main Content Area */}
       <View style={styles.content}>
+        <Text style={styles.title}>Food Amount Screen</Text>
         <Text style={styles.message}>Last Scanned: {scannedData.scannedData}</Text>
       </View>
     </View>
   );
 }
 
-// Styles for the food amount screen, including the container, title, and message text styles.
+// Styles for the food amount screen, including the container, header, back button, and content area.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
