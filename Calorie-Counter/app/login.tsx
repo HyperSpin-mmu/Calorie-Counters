@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useRouter } from "expo-router";
@@ -29,28 +29,29 @@ export default function Login() {
 
 return (
   // Main container for the login screen
-  <View style={{ padding: 20 }}>
+  // <View style={{ padding: 20 }}>
+  <View style={styles.container}>
 
     {/* Email label */}
     <Text>Email</Text>
 
     {/* Email input box */}
-    <TextInput
+    <TextInput style={styles.input}
       value={email}              // what the user typed
       onChangeText={setEmail}    // update email state when typing
       autoCapitalize="none"
-      style={{ borderWidth: 1, marginBottom: 10 }}
+
     />
 
     {/* Password label */}
     <Text>Password</Text>
 
     {/* Password input box */}
-    <TextInput
+    <TextInput style={styles.input}
       value={password}
       onChangeText={setPassword}
       secureTextEntry            // hides the password
-      style={{ borderWidth: 1, marginBottom: 10 }}
+
     />
 
     {/* Show error message if login fails */}
@@ -61,3 +62,25 @@ return (
   </View>
 );
 }
+
+const styles = StyleSheet.create({ //copied from some other file
+  container: {
+    marginHorizontal: 20,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: "GoogleSans",
+  },
+  input:{
+    marginVertical: 4,
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    backgroundColor: "#fff",
+    width: "90%",
+  }
+});

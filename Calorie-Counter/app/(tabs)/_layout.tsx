@@ -8,7 +8,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 //This is the button in the middle of the tab bar, it is used to navigate to the barcode scanner screen.
-const BarButton = ({ children, onPress }: { children: any, onPress: any }) => (
+const BarButton = ({ onPress }: { onPress: any }) => (
   <TouchableOpacity
     style={{
       top: -20,
@@ -94,8 +94,8 @@ export default function RootLayout() {
         name="action"
         options={{
           tabBarLabel: () => null,
-          tabBarButton: (props) => (
-             <BarButton onPress={handleButtonPress} children={undefined} />
+          tabBarButton: () => (
+             <BarButton onPress={handleButtonPress} />
           ),
           tabBarStyle: {display: 'none' },
         }}
