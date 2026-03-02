@@ -6,7 +6,9 @@ import {
   Dimensions,
   StyleSheet,
   Text,
+  TouchableOpacity,   
 } from "react-native";
+import { useRouter } from "expo-router"; // needed so that we can redirect to the login 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window"); // Get device screen dimensions for responsive design
 
@@ -39,6 +41,7 @@ const carouselData: CarouselItem[] = [  // Sample data for the carousel, each it
 ];
 
 export default function Splash() {  
+  const router = useRouter(); // <-- added
   const [activeIndex, setActiveIndex] = React.useState(0);  // State to track the currently active carousel item index
 
   const handleScroll = (event: any) => {  // Calculate the active index based on the horizontal scroll position of the FlatList
@@ -77,7 +80,7 @@ export default function Splash() {
   };
 
   return (  
-    <View style={styles.container}> // Main container for the splash screen
+    <View style={styles.container}> {/* Main container for the splash screen */}
 
       <View style={{ height: screenHeight * 0.8 }}>
         <FlatList
@@ -93,6 +96,44 @@ export default function Splash() {
       </View>
 
       <View style={styles.dotContainer}>{renderDots()}</View>
+
+      {/* SIMPLE BUTTON TO GO TO Account creation screen */}
+      <TouchableOpacity
+        //onPress={() => router.replace("/login")}   // redirects to login
+        style={{
+          backgroundColor: "green",
+          paddingVertical: 14,
+          paddingHorizontal: 40,
+          borderRadius: 10,
+          marginTop: 20,
+          width: 200,
+          alignSelf: "center",
+
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>
+          Create Account
+        </Text>
+      </TouchableOpacity>
+
+      {/* SIMPLE BUTTON TO GO TO LOGIN */}
+      <TouchableOpacity
+        onPress={() => router.replace("/login")}   // redirects to login
+        style={{
+          backgroundColor: "gray",
+          paddingVertical: 14,
+          paddingHorizontal: 40,
+          borderRadius: 10,
+          marginTop: 20,
+          width: 200,
+          alignSelf: "center",
+
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>
+          Login
+        </Text>
+      </TouchableOpacity>
 
     </View>
   );
@@ -110,7 +151,6 @@ const styles = StyleSheet.create({    // Styles for the splash screen, including
   },
 
   textContainer: {
-    
     marginBottom: 0,
     alignItems: "center",
   },
