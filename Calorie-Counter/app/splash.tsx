@@ -99,7 +99,7 @@ export default function Splash() {
 
       {/* SIMPLE BUTTON TO GO TO Account creation screen */}
       <TouchableOpacity
-        //onPress={() => router.replace("/login")}   // redirects to login
+        onPress={() => router.replace("/signUp")}   // redirects to signup
         style={{
           backgroundColor: "green",
           paddingVertical: 14,
