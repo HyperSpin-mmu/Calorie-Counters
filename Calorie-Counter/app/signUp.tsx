@@ -1,22 +1,28 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useRouter } from "expo-router";
 
-export default function Login() {
+export default function Signup() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // NEW FIELD
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     setError("");
 
+    // Check if passwords match before calling Firebase
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.replace("/(tabs)");
+      await createUserWithEmailAndPassword(auth, email, password);
+      router.replace("/motivation"); // needs to be replaces with motivation screen
     } catch (err: any) {
       setError(err.message);
     }
@@ -40,7 +46,6 @@ export default function Login() {
         secureTextEntry
       />
 
-      {/* NEW: Re-enter password */}
       <Text>Re-enter Password</Text>
       <TextInput
         style={styles.input}
@@ -51,7 +56,7 @@ export default function Login() {
 
       {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
 
-      <Button title="Login" onPress={handleLogin} />
+      <Button title="Create Account" onPress={handleSignup} />
     </View>
   );
 }
@@ -62,10 +67,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  title: {
-    fontSize: 28,
-    fontFamily: "GoogleSans",
   },
   input: {
     marginVertical: 4,
