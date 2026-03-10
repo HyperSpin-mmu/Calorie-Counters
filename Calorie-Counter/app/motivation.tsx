@@ -15,12 +15,10 @@ const handleSelect = (motivation: string) => {
   setDetails((prev: string[]) => [...prev, motivation]);    // Add the selected motivation to the details array using the functional form of setState to ensure we get the latest state
 
   router.push({     // Navigate to the main app screen (tabs) and pass the selected motivation as a parameter
-    pathname: "/(tabs)",
+    pathname: "/(tabs)",   // or wherever you want to go next
     params: { motivation },
   });
 };
-
-
 
   return (
     <View style={styles.container}>
