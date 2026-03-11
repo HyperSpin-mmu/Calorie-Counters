@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router"; // Import useLocalSearchParams to access the motivation parameter passed from the previous screen
 
 export default function ActivityLevelScreen() {
   const router = useRouter();
+  const { motivation } = useLocalSearchParams(); // <-- FIX: moved inside component
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
 
   const handleSelect = (level: string) => {
@@ -11,7 +12,10 @@ export default function ActivityLevelScreen() {
 
     router.push({
       pathname: "/(tabs)",   // or wherever you want to go next
-      params: { activity: level },
+      params: { 
+        activity: level,
+        motivation: motivation,   // passing values forward
+      },
     });
   };
 
@@ -37,6 +41,7 @@ export default function ActivityLevelScreen() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
