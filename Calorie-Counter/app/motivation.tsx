@@ -11,11 +11,10 @@ export default function MotivationScreen() {
 
 const handleSelect = (motivation: string) => {
   setSelectedMotivation(motivation);    // Update the selected motivation state when a button is pressed
-
   setDetails((prev: string[]) => [...prev, motivation]);    // Add the selected motivation to the details array using the functional form of setState to ensure we get the latest state
 
   router.push({     // Navigate to the main app screen (tabs) and pass the selected motivation as a parameter
-    pathname: "/(tabs)",   // or wherever you want to go next
+    pathname: "/activitylevel",   // or wherever you want to go next
     params: { motivation },
   });
 };
