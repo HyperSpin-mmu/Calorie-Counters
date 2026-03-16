@@ -8,7 +8,7 @@ export default function ActivityLevelScreen() {
 
   const handleContinue = () => {
     router.push({
-      pathname: "/(tabs)",
+      pathname: "/BMI_Calculation",
       params: {
         motivation,
         activity,
