@@ -4,14 +4,14 @@ import { useLocalSearchParams, useRouter } from "expo-router"; // Import useLoca
 
 export default function ActivityLevelScreen() {
   const router = useRouter();
-  const { motivation } = useLocalSearchParams(); // <-- FIX: moved inside component
+  const { motivation } = useLocalSearchParams(); // Get the motivation parameter passed from the previous screen, which will be used to pass forward to the main app screen
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
 
   const handleSelect = (level: string) => {
     setSelectedLevel(level);
 
     router.push({
-      pathname: "/(tabs)",   // or wherever you want to go next
+      pathname: "/BMI_Explanation",   // or wherever you want to go next
       params: { 
         activity: level,
         motivation: motivation,   // passing values forward
