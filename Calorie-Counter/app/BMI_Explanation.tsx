@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
+
+
 export default function ActivityLevelScreen() {
   const router = useRouter();
   const { motivation, activity } = useLocalSearchParams();

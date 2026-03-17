@@ -6,8 +6,16 @@ import { useLocalSearchParams } from "expo-router"; // added import
 export default function Index() {
   const user = auth.currentUser; // added user variable
 
-  // Get motivation + activity passed from onboarding
-  const { motivation, activity } = useLocalSearchParams(); // added line
+  // Get all data passed from onboarding + BMI flow
+  const { 
+    motivation, 
+    activity, 
+    height, 
+    weight, 
+    age, 
+    sex, 
+    bmi 
+  } = useLocalSearchParams(); // expanded line
 
   return (
     <View style={styles.container}>
@@ -26,6 +34,31 @@ export default function Index() {
       {/* Display activity level */}
       {activity && (
         <Text style={styles.info}>Activity Level: {activity}</Text>
+      )}
+
+      {/* Display height */}
+      {height && (
+        <Text style={styles.info}>Height: {height} cm</Text>
+      )}
+
+      {/* Display weight */}
+      {weight && (
+        <Text style={styles.info}>Weight: {weight} kg</Text>
+      )}
+
+      {/* Display age */}
+      {age && (
+        <Text style={styles.info}>Age: {age}</Text>
+      )}
+
+      {/* Display sex */}
+      {sex && (
+        <Text style={styles.info}>Sex: {sex}</Text>
+      )}
+
+      {/* Display BMI */}
+      {bmi && (
+        <Text style={styles.info}>BMI: {bmi}</Text>
       )}
     </View>
   );

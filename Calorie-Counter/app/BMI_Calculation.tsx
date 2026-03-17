@@ -9,9 +9,12 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+
 
 export default function BMICalculatorScreen() {
+  
+  const { motivation, activity } = useLocalSearchParams();
   const router = useRouter();
 
   const [height, setHeight] = useState("");
@@ -19,12 +22,21 @@ export default function BMICalculatorScreen() {
   const [age, setAge] = useState("");
   const [sex, setSex] = useState("female");
 
-  const handleCalculate = () => {
-    router.push({
-      pathname: "/(tabs)",
-      params: { height, weight, age, sex },
-    });
-  };
+const handleCalculate = () => {
+  router.push({
+    pathname: "/BMI_results",
+    params: {
+      height,
+      weight,
+      age,
+      sex,
+      motivation,
+      activity,
+    },
+  });
+};
+
+
 
   return (
     <KeyboardAvoidingView
