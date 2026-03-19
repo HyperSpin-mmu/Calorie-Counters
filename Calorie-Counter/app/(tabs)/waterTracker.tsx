@@ -1,31 +1,26 @@
-import { Button } from "@react-navigation/elements";
-import { Text, View, StyleSheet } from "react-native";
+import { Alert, Button, Text, View, StyleSheet, TextInput } from "react-native";
 
-export default function Welcome() {
-  return (
+export default function WaterTracker() {
+  const handlePress = () => {
+    <View style={styles.container}>
+      <TextInput></TextInput>
+      <Button title="Enter" onPress={handlePress2} />
+    </View>
+  };
+
+  const handlePress2 = () => {
+    <View style={styles.container}>
+      <Text style={styles.title}>Water Logged!</Text>
+      <Button title="Back" />
+    </View>
+  }
+
+    return (
     <View style={styles.container}>
       <Text style={styles.title}>Water Log</Text>
-      <Button style={styles.button}>Log</Button>
+      <Button title="Log" onPress={handlePress} />
     </View>
   );
-}
-
-export function WaterLog() {
-    return (
-        <View style={styles.container}>
-            <Input style={styles.input}></Input>
-            <Button style={styles.button}>Submit</Button>
-        </View>
-    );
-}
-
-export function OutputMessage() {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Water Logged!</Text>
-            <Button style={styles.button}>Back</Button>
-        </View>
-    );
 }
 
 const styles = StyleSheet.create({
@@ -36,6 +31,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontFamily: "GoogleSans",
+    //fontFamily: "GoogleSans",
   }
 });
