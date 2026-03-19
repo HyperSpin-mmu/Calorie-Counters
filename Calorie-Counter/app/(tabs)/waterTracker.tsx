@@ -13,7 +13,10 @@ export default function WaterTracker() {
   {
     return (
       <View>
-        <TextInput placeholder="e.g., 250ml" />
+        <TextInput 
+          placeholder="e.g., 250ml"
+          style={styles.textinput}
+        />
         <Button title="Enter" onPress={() => Alert.alert("Submitted")} />
         <Button title="Back" onPress={() => setIsLogged(false)} />
       </View>
@@ -32,12 +35,21 @@ export default function WaterTracker() {
 
 const styles = StyleSheet.create({
   container: {
+    margin: 0,
+    padding: 0,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   title: {
     fontSize: 28,
-    //fontFamily: "GoogleSans",
-  }
+    fontFamily: "GoogleSans",
+  },
+  textinput: {
+    margin: 50,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: '000',
+    borderRadius: 5,
+  },
 });
