@@ -1,24 +1,29 @@
+import { useState } from "react";
 import { Alert, Button, Text, View, StyleSheet, TextInput } from "react-native";
 
 export default function WaterTracker() {
-  const handlePress = () => {
-    <View style={styles.container}>
-      <TextInput></TextInput>
-      <Button title="Enter" onPress={handlePress2} />
-    </View>
-  };
+  // Create two condition variable: true and false
+  // using State
+  const True = useState("")
+  const False = useState("home")
 
-  const handlePress2 = () => {
-    <View style={styles.container}>
-      <Text style={styles.title}>Water Logged!</Text>
-      <Button title="Back" />
-    </View>
-  }
-
+  // Using simple condtion (the if statement):
+  // If the condition is true, show the screen to input the water (UI)
+  // Else, return to the home screen
+  if (True)
+  {
     return (
+      <View>
+        <TextInput placeholder="e.g., 250ml" />
+        <Button title="Enter" onPress={() => Alert.alert("Submitted")} />
+      </View>
+    )
+  }
+  
+  return (
     <View style={styles.container}>
       <Text style={styles.title}>Water Log</Text>
-      <Button title="Log" onPress={handlePress} />
+      <Button title="Log" onPress={() => useState(True)} />
     </View>
   );
 }
