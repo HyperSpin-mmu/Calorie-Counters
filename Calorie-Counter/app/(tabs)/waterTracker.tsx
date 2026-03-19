@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Button, Text, View, StyleSheet, TextInput } from "react-native";
+import { Alert, Button, Text, View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
 export default function WaterTracker() {
   // Create two condition variable: true and false
@@ -12,13 +12,21 @@ export default function WaterTracker() {
   if (isLogged) // -> setIsLogged(true)
   {
     return (
-      <View>
+      <View style={styles.container}>
         <TextInput 
           placeholder="e.g., 250ml"
           style={styles.textinput}
         />
-        <Button title="Enter" onPress={() => Alert.alert("Submitted")} />
-        <Button title="Back" onPress={() => setIsLogged(false)} />
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => Alert.alert("Submitted")}
+        >Enter</TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setIsLogged(false)}
+        >Back</TouchableOpacity>
       </View>
     )
   }
@@ -27,7 +35,10 @@ export default function WaterTracker() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Water Log</Text>
-        <Button title="Log" onPress={() => setIsLogged(true)} />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setIsLogged(true)}
+        >Log</TouchableOpacity>
       </View>
     );
   }
@@ -46,10 +57,21 @@ const styles = StyleSheet.create({
     fontFamily: "GoogleSans",
   },
   textinput: {
-    margin: 50,
-    padding: 5,
+    margin: 30,
+    padding: 20,
+    height: 40,
     borderWidth: 1,
-    borderColor: '000',
+    borderColor: 'black',
     borderRadius: 5,
   },
+  button: {
+    margin: 10,
+    padding: 5,
+    width: 100,
+    backgroundColor: '#4285F4',
+    borderRadius: 5,
+    fontFamily: "GoogleSans",
+    textAlign: "center",
+    color: 'white',
+  }
 });
