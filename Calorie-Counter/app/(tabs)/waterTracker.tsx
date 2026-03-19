@@ -6,6 +6,16 @@ export default function WaterTracker() {
   // using State
   const [isLogged, setIsLogged] = useState(false) 
 
+  const [inputValue, setInputValue] = useState("") // -> empty variable
+
+  const handle = (text: string) => { // -> taking text as parameter
+    setInputValue(text);
+  };
+  
+  // Adding condition: if the input box is not empty AND is a numerical value (!isNan), enable "Enter" button
+  //... else, keep it hidden
+  const enableEnterButton = inputValue.trim() !== "" && !isNaN(Number(inputValue));
+
   // Using simple condtion (the if statement):
   // If the condition is true, show the screen to input the water (UI)
   // Else, return to the home screen
@@ -16,12 +26,19 @@ export default function WaterTracker() {
         <TextInput 
           placeholder="e.g., 250ml"
           style={styles.textinput}
+          maxLength={4}
+          keyboardType="numeric" // -> enforce numeric value to enter
+          onChangeText={handle} // -> linking to the function (handle)
+          value={inputValue}
         />
 
-        <TouchableOpacity
+        {/* Condition applies here */}
+        {enableEnterButton && (
+          <TouchableOpacity
           style={styles.button}
           onPress={() => Alert.alert("Submitted")}
-        >Enter</TouchableOpacity>
+          >Enter</TouchableOpacity>
+        )}
 
         <TouchableOpacity
           style={styles.button}
