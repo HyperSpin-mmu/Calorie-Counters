@@ -9,9 +9,14 @@ export default function WaterTracker() {
 
   const [inputValue, setInputValue] = useState("") // -> empty variable
 
+  const [count, setCount] = useState(0)
+  const [text, setText] = useState('')
+
   const handle = (text: string) => { // -> taking text as parameter
     setInputValue(text);
   };
+
+  const handleReset = () => {setCount(0); setText(''); setInputValue('')}
   
   // Adding condition: if the input box is not empty AND is a numerical value (!isNan), enable "Enter" button
   //... else, keep it hidden
@@ -39,7 +44,7 @@ export default function WaterTracker() {
         {enableEnterButton && (
           <TouchableOpacity
           style={styles.button}
-          onPress={() => Alert.alert("Submitted")}
+          onPress={handleReset}
           ><Text style={styles.buttontext}>Enter</Text></TouchableOpacity>
         )}
 
