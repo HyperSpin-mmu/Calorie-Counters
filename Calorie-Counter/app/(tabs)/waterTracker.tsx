@@ -20,8 +20,15 @@ export default function WaterTracker() {
   };
 
   const handleSetWaterValue = (text: number) => { // (type number/integer)
-    setWaterMeasurement({ amount: text, unit: unitValue }); // -> value stored here
-    setCount(0); setText(''); setInputValue('') // -> reset text input
+    // If amount > 1 and unit == litres, stop program
+    if (text > 1 && unitValue == 'l') {
+      Alert.alert("Exceeded limit (>1 l)")
+    }
+
+    else {
+      setWaterMeasurement({ amount: text, unit: unitValue }); // -> value stored here
+      setCount(0); setText(''); setInputValue('') // -> reset text input
+    }
   }
   
   // Adding condition: if the input box is not empty AND is a numerical value (!isNan), enable "Enter" button
