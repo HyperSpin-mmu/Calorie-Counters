@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Alert, Button, Text, View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { Alert, Text, View, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
 export default function WaterTracker() {
   // Create two condition variable: true and false
@@ -23,14 +24,16 @@ export default function WaterTracker() {
   {
     return (
       <View style={styles.container}>
-        <TextInput 
-          placeholder="e.g., 250ml"
-          style={styles.textinput}
+        <KeyboardAvoidingView>
+          <TextInput
+          style={styles.textinput} 
+          placeholder="e.g., 250"
           maxLength={4}
           keyboardType="numeric" // -> enforce numeric value to enter
           onChangeText={handle} // -> linking to the function (handle)
           value={inputValue}
         />
+        </KeyboardAvoidingView>
 
         {/* Condition applies here */}
         {enableEnterButton && (
@@ -44,6 +47,11 @@ export default function WaterTracker() {
           style={styles.button}
           onPress={() => setIsLogged(false)}
         ><Text style={styles.buttontext}>Back</Text></TouchableOpacity>
+
+        <Picker>
+          <Picker.Item label="ml" value="ml"/>
+          <Picker.Item label="l" value="l"/>
+        </Picker>
       </View>
     )
   }
@@ -74,13 +82,13 @@ const styles = StyleSheet.create({
     fontFamily: "GoogleSans",
   },
   textinput: {
-    margin: 30,
-    padding: 20,
     height: 40,
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 5,
-    color: 'black'
+    color: 'black',
+    textAlign: 'center',
+    fontSize: 25
   },
   button: {
     margin: 10,
