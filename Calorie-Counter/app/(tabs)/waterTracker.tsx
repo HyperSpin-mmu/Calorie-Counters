@@ -42,8 +42,7 @@ export default function WaterTracker() {
   {
     return (
       <View style={styles.container}>
-        <KeyboardAvoidingView>
-          <TextInput
+        <TextInput
           style={styles.textinput} 
           placeholder="e.g., 250"
           maxLength={4}
@@ -51,7 +50,6 @@ export default function WaterTracker() {
           onChangeText={handle} // -> linking to the function (handle)
           value={inputValue}
         />
-        </KeyboardAvoidingView>
 
         <Picker style={styles.picker} selectedValue={unitValue} onValueChange={(itemValue) => setUnitValue(itemValue)}>
           <Picker.Item label="ml" value="ml"/>
@@ -130,6 +128,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     fontSize: 25,
-    borderRadius: 5
+    borderRadius: 5,
+    height: 30
   }
 });
