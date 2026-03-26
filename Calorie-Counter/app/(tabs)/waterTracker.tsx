@@ -7,19 +7,20 @@ export default function WaterTracker() {
   // using State
   const [isLogged, setIsLogged] = useState(false) 
 
-  const [inputValue, setInputValue] = useState("") // -> empty variable
+  const [inputValue, setInputValue] = useState('') // -> empty variable
 
   const [count, setCount] = useState(0)
   const [text, setText] = useState('')
 
-  const [waterValue, setWaterValue] = useState(0)
+  const [waterMeasurement, setWaterMeasurement] = useState({amount: 0, unit: ''}) // -> type number for 'amount' and string for 'unit'
+  const [unitValue, setUnitValue] = useState('ml') // -> default value
 
   const handle = (text: string) => { // -> taking text as parameter (type string)
     setInputValue(text); // -> setting value as the user's input
   };
 
   const handleSetWaterValue = (text: number) => { // (type number/integer)
-    setWaterValue(text); // -> value stored here
+    setWaterMeasurement({ amount: text, unit: unitValue }); // -> value stored here
     setCount(0); setText(''); setInputValue('') // -> reset text input
   }
   
@@ -45,6 +46,11 @@ export default function WaterTracker() {
         />
         </KeyboardAvoidingView>
 
+        <Picker style={styles.picker} selectedValue={unitValue} onValueChange={(itemValue) => setUnitValue(itemValue)}>
+          <Picker.Item label="ml" value="ml"/>
+          <Picker.Item label="l" value="l"/>
+        </Picker>
+
         {/* Condition applies here */}
         {enableEnterButton && (
           <TouchableOpacity
@@ -58,12 +64,7 @@ export default function WaterTracker() {
           onPress={() => setIsLogged(false)}
         ><Text style={styles.buttontext}>Back</Text></TouchableOpacity>
 
-        <Picker>
-          <Picker.Item label="ml" value="ml"/>
-          <Picker.Item label="l" value="l"/>
-        </Picker>
-
-        <Text>{waterValue}</Text>
+        <Text style={styles.text}>Latest Water Logged: {waterMeasurement.amount} {waterMeasurement.unit}</Text>
       </View>
     )
   }
@@ -95,12 +96,13 @@ const styles = StyleSheet.create({
   },
   textinput: {
     height: 40,
+    width: 'auto',
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 5,
-    color: 'black',
     textAlign: 'center',
-    fontSize: 25
+    fontSize: 25,
+    backgroundColor: 'white'
   },
   button: {
     margin: 10,
@@ -115,5 +117,12 @@ const styles = StyleSheet.create({
   buttontext: {
     textAlign: "center",
     color: 'white'
+  },
+  text: {
+    fontSize: 25
+  },
+  picker: {
+    fontSize: 25,
+    borderRadius: 5
   }
 });
