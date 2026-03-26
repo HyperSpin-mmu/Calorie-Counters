@@ -37,13 +37,13 @@ export default function WaterTracker() {
           <TouchableOpacity
           style={styles.button}
           onPress={() => Alert.alert("Submitted")}
-          >Enter</TouchableOpacity>
+          ><Text style={styles.buttontext}>Enter</Text></TouchableOpacity>
         )}
 
         <TouchableOpacity
           style={styles.button}
           onPress={() => setIsLogged(false)}
-        >Back</TouchableOpacity>
+        ><Text style={styles.buttontext}>Back</Text></TouchableOpacity>
       </View>
     )
   }
@@ -55,7 +55,7 @@ export default function WaterTracker() {
         <TouchableOpacity
           style={styles.button}
           onPress={() => setIsLogged(true)}
-        >Log</TouchableOpacity>
+        ><Text style={styles.buttontext}>Log</Text></TouchableOpacity>
       </View>
     );
   }
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 5,
+    color: 'black'
   },
   button: {
     margin: 10,
@@ -90,5 +91,9 @@ const styles = StyleSheet.create({
     fontFamily: "GoogleSans",
     textAlign: "center",
     color: 'white',
+  },
+  buttontext: {
+    textAlign: "center",
+    color: 'white'
   }
 });
