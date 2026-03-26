@@ -12,11 +12,16 @@ export default function WaterTracker() {
   const [count, setCount] = useState(0)
   const [text, setText] = useState('')
 
-  const handle = (text: string) => { // -> taking text as parameter
-    setInputValue(text);
+  const [waterValue, setWaterValue] = useState(0)
+
+  const handle = (text: string) => { // -> taking text as parameter (type string)
+    setInputValue(text); // -> setting value as the user's input
   };
 
-  const handleReset = () => {setCount(0); setText(''); setInputValue('')}
+  const handleSetWaterValue = (text: number) => { // (type number/integer)
+    setWaterValue(text); // -> value stored here
+    setCount(0); setText(''); setInputValue('') // -> reset text input
+  }
   
   // Adding condition: if the input box is not empty AND is a numerical value (!isNan), enable "Enter" button
   //... else, keep it hidden
@@ -44,7 +49,7 @@ export default function WaterTracker() {
         {enableEnterButton && (
           <TouchableOpacity
           style={styles.button}
-          onPress={handleReset}
+          onPress={() => {handleSetWaterValue(Number(inputValue))}}
           ><Text style={styles.buttontext}>Enter</Text></TouchableOpacity>
         )}
 
@@ -57,6 +62,8 @@ export default function WaterTracker() {
           <Picker.Item label="ml" value="ml"/>
           <Picker.Item label="l" value="l"/>
         </Picker>
+
+        <Text>{waterValue}</Text>
       </View>
     )
   }
