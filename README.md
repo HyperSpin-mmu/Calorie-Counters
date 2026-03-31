@@ -1,8 +1,5 @@
 Hi there! 
 
-To run this, you'll need expo. Please install expo via the terminal in your ide and also any .js files needed for it to run (such as node.js)
-
-If on a PC at uni, run commands in cmd prompt rather than bash.
-Follow expo documentation and make a branch please.
+This is the dev branch which will be used to merge all of our branches together. It's going to be a bit of a pain but hopefully I will be able to merge / get everything to work once everyone has merged their branches when they are finished. Feel free to use this branch to have a look at my code and use it with your own code. Again, if you have any questions, feel free to reach out. Many thanks my loyal patrons,
 
 -Team leader, Ben.
