@@ -4,7 +4,7 @@ import { Text, View, StyleSheet } from "react-native";
 export default function FoodDiary() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Diary</Text>
+      <Text style={styles.title}>Food Diary</Text>
     </View>
   );
 }
