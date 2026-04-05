@@ -1,7 +1,5 @@
-// app/store/diaryStore.ts
-// This store keeps all food diary entries in one place.
-// It follows the shared structure from Sprint 1 so the rest of the app
-// works with one consistent format.
+// This store keeps the food diary entries in one place.
+// It uses the shared structure from Sprint 1 so the diary data stays consistent.
 
 import { create } from "zustand";
 import type { FoodLogEntry } from "@/app/types/food";
@@ -12,7 +10,7 @@ import {
   groupEntriesByMealType,
 } from "@/app/utils/diary";
 
-// This describes everything the diary store needs to hold and do.
+// This covers the diary data and the actions the store needs to provide.
 interface DiaryState {
   // All food entries currently stored in the diary.
   entries: FoodLogEntry[];

@@ -1,6 +1,5 @@
-// app/utils/barcodeToDiary.ts
-// This file turns barcode scan results into the diary entry format used by the app.
-// Ben's API can return values like "N/A", so we clean them up here before saving anything.
+// This helper converts barcode scan results into the diary entry format.
+// If the barcode data is missing anything useful, it is cleaned up before saving.
 
 import type { FoodLogEntry, MealType } from "../types/food";
 
@@ -14,8 +13,8 @@ type BarcodeFoodResult = {
   fat: number | string;
 };
 
-// Turns API values into proper numbers for the diary.
-// If the API gives us "N/A" or something unusable, we store 0 instead.
+// This turns barcode values into numbers for the diary.
+// If a value is missing or unusable, it falls back to 0.
 function toSafeNumber(value: number | string | undefined): number {
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : 0;
