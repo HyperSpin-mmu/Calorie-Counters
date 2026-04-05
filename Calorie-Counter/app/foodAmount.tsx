@@ -1,19 +1,32 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, Alert, TextInput, KeyboardAvoidingView, Platform } from "react-native";
-import { useRouter} from 'expo-router';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { fetchFoodData } from "./services/api"; 
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+  Alert,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import { useRouter } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { fetchFoodData } from "./services/api";
 import { useDiaryStore } from "./store/diaryStore";
 import type { MealType } from "./types/food";
 import { mapBarcodeFoodToDiaryEntry } from "./utils/barcodeToDiary";
+
+type FoodData = Awaited<ReturnType<typeof fetchFoodData>>;
 
 
 // This screen is navigated to from the barcode scanner screen, it receives the scanned data as a parameter and displays it.
 export default function foodAmountScreen() {
 
-  const [foodData, setFoodData] = useState<{ name: any; brand: any; calories: any; carbs: any; protein: any; fat: any; } | null>(null);
+  const [foodData, setFoodData] = useState<FoodData | null>(null);
 
   // Get the scanned data from the navigation parameters passed from the barcode scanner screen. 
   const addEntry = useDiaryStore((state) => state.addEntry);
@@ -29,9 +42,7 @@ export default function foodAmountScreen() {
   const [unit, setUnit] = useState("serving");
   const [mealType, setMealType] = useState<MealType>("breakfast");
 
-  // Handle the "Add to Diary" button press, show an alert and navigate to the food diary screen if the user chooses to view the diary.
-  // When the user confirms, we turn the scanned product into the diary format
-  // and then save it into the Zustand store.
+  // When the user confirms the item, it is converted into the diary format and saved in the Zustand store.
   const handleAddToDiary = () => {
     if (!foodData) return;
 
@@ -102,7 +113,7 @@ export default function foodAmountScreen() {
   // Function to calculate the adjusted macro values based on the entered amount and selected unit.
   // This works out the final nutrition value based on the amount and unit chosen by the user.
   // We return a number here because the diary store expects numeric values, not strings.
-  const calculateAdjustedValue = (baseValue: any): number => {
+  const calculateAdjustedValue = (baseValue: number | string): number => {
     if (baseValue === null || baseValue === undefined || isNaN(Number(baseValue))) {
       return 0;
     }
@@ -114,6 +125,7 @@ export default function foodAmountScreen() {
 
     if (unit === "g" || unit === "ml") {
       multiplier = amountValue / 100;
+    
     } else {
       multiplier = amountValue;
     }
