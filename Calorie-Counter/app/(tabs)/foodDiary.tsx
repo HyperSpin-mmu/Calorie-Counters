@@ -17,6 +17,7 @@ export default function FoodDiary() {
   const selectedDay = useDiaryStore((state) => state.selectedDay);
   const entries = useDiaryStore((state) => state.entries);
   const removeEntry = useDiaryStore((state) => state.removeEntry);
+  const setSelectedDay = useDiaryStore((state) => state.setSelectedDay);
 
   const selectedEntries = useMemo(() => {
     return filterEntriesByDay(entries, selectedDay);
@@ -30,10 +31,32 @@ export default function FoodDiary() {
     return calculateMacroTotals(selectedEntries);
   }, [selectedEntries]);
 
+  // This moves the diary backwards or forwards by one day at a time
+  const changeDay = (offset: number) => {
+    const currentDate = new Date(`${selectedDay}T00:00:00`);
+    currentDate.setDate(currentDate.getDate() + offset);
+
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const day = String(currentDate.getDate()).padStart(2, "0");
+
+    setSelectedDay(`${year}-${month}-${day}`);
+  }
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Food Diary</Text>
-      <Text style={styles.dateText}>{selectedDay}</Text>
+      <View style={styles.dateBar}>
+        <TouchableOpacity style={styles.dateButton} onPress={() => changeDay(-1)}>
+          <Text style={styles.dateButtonText}>Previous</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.dateText}>{selectedDay}</Text>
+
+        <TouchableOpacity style={styles.dateButton} onPress={() => changeDay(1)}>
+          <Text style={styles.dateButtonText}>Next</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.summaryCard}>
         <Text style={styles.summaryTitle}>Daily Summary</Text>
@@ -103,10 +126,25 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     color: "#111111",
   },
+  dateBar: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: 18,
+  },
   dateText: {
     fontSize: 15,
     color: "#666666",
-    marginBottom: 18,
+  },
+  dateButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: "#EDEDED",
+  },
+  dateButtonText: {
+    fontSize: 13,
+    color: "#333333",
   },
   summaryCard: {
     backgroundColor: "#FFFFFF",
