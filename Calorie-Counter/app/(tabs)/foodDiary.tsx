@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDiaryStore } from "../store/diaryStore";
 import type { MealType } from "../types/food";
 import {
@@ -15,6 +15,7 @@ const MEAL_SECTIONS: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
 export default function FoodDiary() {
   const selectedDay = useDiaryStore((state) => state.selectedDay);
   const entries = useDiaryStore((state) => state.entries);
+  const removeEntry = useDiaryStore((state) => state.removeEntry);
 
   const selectedEntries = useMemo(() => {
     return filterEntriesByDay(entries, selectedDay);
@@ -61,6 +62,13 @@ export default function FoodDiary() {
                       {entry.calories} kcal • {entry.protein}g protein • {entry.carbs}g carbs • {entry.fat}g fat
                     </Text>
                   </View>
+
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => removeEntry(entry.id)}
+                  >
+                    <Text style={styles.removeButtonText}>Remove</Text>
+                  </TouchableOpacity>
                 </View>
               ))
             )}
@@ -125,12 +133,26 @@ const styles = StyleSheet.create({
     color: "#777777",
   },
   entryRow: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#EEEEEE",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  paddingVertical: 10,
+  borderBottomWidth: 1,
+  borderBottomColor: "#EEEEEE",
   },
   entryTextWrap: {
     flex: 1,
+  },
+  removeButton: {
+  marginLeft: 12,
+  paddingVertical: 6,
+  paddingHorizontal: 10,
+  borderRadius: 8,
+  backgroundColor: "#FDECEC",
+  },
+  removeButtonText: {
+  fontSize: 13,
+  color: "#C62828",
   },
   entryName: {
     fontSize: 16,
