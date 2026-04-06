@@ -1,6 +1,12 @@
+import { useMemo } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useDiaryStore } from "../store/diaryStore";
 import type { MealType } from "../types/food";
+import {
+  calculateMacroTotals,
+  filterEntriesByDay,
+  groupEntriesByMealType,
+} from "../utils/diary";
 
 // These are the fixed meal sections used in the diary.
 const MEAL_SECTIONS: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
@@ -8,12 +14,19 @@ const MEAL_SECTIONS: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
 // This screen shows the selected day's entries and the daily nutrition totals.
 export default function FoodDiary() {
   const selectedDay = useDiaryStore((state) => state.selectedDay);
-  const groupedEntries = useDiaryStore((state) =>
-    state.getGroupedEntriesForSelectedDay()
-  );
-  const macroTotals = useDiaryStore((state) =>
-    state.getMacroTotalsForSelectedDay()
-  );
+  const entries = useDiaryStore((state) => state.entries);
+
+  const selectedEntries = useMemo(() => {
+    return filterEntriesByDay(entries, selectedDay);
+  }, [entries, selectedDay]);
+
+  const groupedEntries = useMemo(() => {
+    return groupEntriesByMealType(selectedEntries);
+  }, [selectedEntries]);
+
+  const macroTotals = useMemo(() => {
+    return calculateMacroTotals(selectedEntries);
+  }, [selectedEntries]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
