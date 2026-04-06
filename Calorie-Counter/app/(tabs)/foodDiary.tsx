@@ -7,6 +7,7 @@ import {
   filterEntriesByDay,
   groupEntriesByMealType,
 } from "../utils/diary";
+import MacroRingChart from "../components/MacroRingChart";
 
 // These are the fixed meal sections used in the diary.
 const MEAL_SECTIONS: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
@@ -40,6 +41,14 @@ export default function FoodDiary() {
         <Text style={styles.summaryValue}>Protein: {macroTotals.protein}g</Text>
         <Text style={styles.summaryValue}>Carbs: {macroTotals.carbs}g</Text>
         <Text style={styles.summaryValue}>Fat: {macroTotals.fat}g</Text>
+        
+        <View style={styles.chartWrap}>
+          <MacroRingChart
+            protein={macroTotals.protein}
+            carbs={macroTotals.carbs}
+            fat={macroTotals.fat}
+          />
+        </View>
       </View>
 
       {MEAL_SECTIONS.map((mealType) => {
@@ -115,6 +124,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#333333",
     marginBottom: 4,
+  },
+  chartWrap: {
+  marginTop: 18,
+  alignItems: "center",
   },
   mealCard: {
     backgroundColor: "#FFFFFF",
