@@ -8,8 +8,39 @@ export default function BMIResultScreen() {
 
   const h = Number(height);
   const w = Number(weight);
+  const a = Number(age);
 
+  // BMI
   const bmi = w / ((h / 100) * (h / 100));
+
+  // --- Calorie Goal Calculation --- courtesy of the Mifflin-St Jeor equation
+
+  const calculateCalorieGoal = () => {
+    // 1. BMR
+    let bmr;
+    if (sex === "male") {
+      bmr = 10 * w + 6.25 * h - 5 * a + 5;
+    } else {
+      bmr = 10 * w + 6.25 * h - 5 * a - 161;
+    }
+
+    // 2. Activity multiplier
+    let multiplier = 1.2;
+    if (activity === "active") multiplier = 1.4;
+    if (activity === "very_active") multiplier = 1.6;
+
+    const tdee = bmr * multiplier;
+
+    // 3. Goal adjustment
+    let calorieGoal = tdee;
+    if (motivation === "lose") calorieGoal -= 300;
+    if (motivation === "gain") calorieGoal += 300;
+
+    return Math.round(calorieGoal);
+  };
+
+  const calorieGoal = calculateCalorieGoal();
+  // --------------------------------
 
   return (
     <View style={styles.container}>
@@ -21,13 +52,13 @@ export default function BMIResultScreen() {
         This is calculated using your height and weight.
       </Text>
 
-      {/* Continue button */}
+      {/* Continue button */} 
       <TouchableOpacity
         style={styles.button}
         onPress={() =>
           router.push({
             pathname: "/(tabs)",
-            params: {
+            params: { // Pass all relevant data to the main app screen
               height,
               weight,
               age,
@@ -35,6 +66,7 @@ export default function BMIResultScreen() {
               motivation,
               activity,
               bmi: bmi.toFixed(2),
+              calorieGoal,
             },
           })
         }

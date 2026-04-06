@@ -1,12 +1,13 @@
 import { Text, View, StyleSheet } from "react-native";
-import { auth } from "../../firebase"; // added import
-import { useLocalSearchParams } from "expo-router"; // added import
+import { auth } from "../../firebase"; 
+import { useLocalSearchParams } from "expo-router";
 
-// This is the main page of the app, it is the default screen that is shown when the app is opened.
+// This is the main page of the app. It loads after onboarding + BMI flow.
+// It receives all user data passed through navigation.
 export default function Index() {
-  const user = auth.currentUser; // added user variable
+  const user = auth.currentUser; // Get the currently logged-in user
 
-  // Get all data passed from onboarding + BMI flow
+  // Receive all params passed from the BMIResultScreen
   const { 
     motivation, 
     activity, 
@@ -14,14 +15,15 @@ export default function Index() {
     weight, 
     age, 
     sex, 
-    bmi 
-  } = useLocalSearchParams(); // expanded line
+    bmi,
+    calorieGoal // <-- added calorie goal
+  } = useLocalSearchParams();
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Main page</Text>
 
-      {/* Print the email below */}
+      {/* Display logged-in user's email */}
       {user?.email && (
         <Text style={styles.email}>{user.email}</Text>
       )}
@@ -60,11 +62,16 @@ export default function Index() {
       {bmi && (
         <Text style={styles.info}>BMI: {bmi}</Text>
       )}
+
+      {/* Display calorie goal */}
+      {calorieGoal && (
+        <Text style={styles.info}>Calorie Goal: {calorieGoal} kcal</Text>
+      )}
     </View>
   );
 }
 
-// Styles for the main page, including the container and title text styles.
+// Styles for the main page UI
 const styles = StyleSheet.create({
   container: {
     flex: 1,
