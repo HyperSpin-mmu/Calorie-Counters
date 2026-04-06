@@ -2,19 +2,24 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
+// import firebase
+import { auth, db } from "../firebase"; 
+import { doc, setDoc } from "firebase/firestore"; // firestore functions
+
 export default function BMIResultScreen() {
+  // Getting all params passed from previous screen
   const { height, weight, age, sex, motivation, activity } = useLocalSearchParams();
   const router = useRouter();
 
+  // Convert values to numbers
   const h = Number(height);
   const w = Number(weight);
   const a = Number(age);
 
-  // BMI
+  // BMI calculation
   const bmi = w / ((h / 100) * (h / 100));
 
-  // --- Calorie Goal Calculation --- courtesy of the Mifflin-St Jeor equation
-
+  // --- Calorie Goal Calculation ---
   const calculateCalorieGoal = () => {
     // 1. BMR
     let bmr;
@@ -42,6 +47,49 @@ export default function BMIResultScreen() {
   const calorieGoal = calculateCalorieGoal();
   // --------------------------------
 
+  // --- Save user data to Firestore ---
+  const saveUserData = async () => {
+    const uid = auth.currentUser?.uid; // get logged-in user's ID
+    if (!uid) return; // safety check
+
+    // Create or update the user's Firestore document
+    await setDoc(
+      doc(db, "users", uid),
+      {
+        height,
+        weight,
+        age,
+        sex,
+        motivation,
+        activity,
+        bmi: bmi.toFixed(2),
+        calorieGoal,
+        updatedAt: Date.now(), // timestamp
+      },
+      { merge: true } // prevents overwriting entire document
+    );
+  };
+  // -----------------------------------
+
+  // When user presses continue
+  const handleContinue = async () => {
+    await saveUserData(); // save everything before navigating
+
+    router.push({
+      pathname: "/(tabs)",
+      params: {
+        height,
+        weight,
+        age,
+        sex,
+        motivation,
+        activity,
+        bmi: bmi.toFixed(2),
+        calorieGoal,
+      },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your BMI Result</Text>
@@ -52,25 +100,8 @@ export default function BMIResultScreen() {
         This is calculated using your height and weight.
       </Text>
 
-      {/* Continue button */} 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          router.push({
-            pathname: "/(tabs)",
-            params: { // Pass all relevant data to the main app screen
-              height,
-              weight,
-              age,
-              sex,
-              motivation,
-              activity,
-              bmi: bmi.toFixed(2),
-              calorieGoal,
-            },
-          })
-        }
-      >
+      {/* Continue button */}
+      <TouchableOpacity style={styles.button} onPress={handleContinue}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
     </View>
