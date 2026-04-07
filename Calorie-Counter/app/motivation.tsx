@@ -8,22 +8,23 @@ export default function MotivationScreen() {
 
   const [details, setDetails] = useState<string[]>([]); // State to store the selected motivation details, initialized as an empty array
 
+  const handleSelect = (motivation: string) => {
+    setSelectedMotivation(motivation);    // Update the selected motivation state when a button is pressed
+    setDetails((prev: string[]) => [...prev, motivation]);    // Add the selected motivation to the details array using the functional form of setState to ensure we get the latest state
 
-const handleSelect = (motivation: string) => {
-  setSelectedMotivation(motivation);    // Update the selected motivation state when a button is pressed
-  setDetails((prev: string[]) => [...prev, motivation]);    // Add the selected motivation to the details array using the functional form of setState to ensure we get the latest state
-
-  router.push({     // Navigate to the main app screen (tabs) and pass the selected motivation as a parameter
-    pathname: "/activitylevel",   // or wherever you want to go next
-    params: { motivation },
-  });
-};
+    /* Navigate to the main app screen (tabs) and pass the selected motivation as a parameter */
+    router.push({
+      pathname: "/activitylevel",
+      params: { motivation },
+    });
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Select your motivation</Text>
 
-      <TouchableOpacity style={styles.button} onPress={() => handleSelect("lose")}> // When the "Lose Weight" button is pressed, it calls handleSelect with "lose" as the argument, which updates the selected motivation and navigates to the main app screen with the motivation parameter.
+      <TouchableOpacity style={styles.button} onPress={() => handleSelect("lose")}>
+        {/* When the "Lose Weight" button is pressed, it calls handleSelect with "lose" */}
         <Text style={styles.buttonText}>Lose Weight</Text>
       </TouchableOpacity>
 

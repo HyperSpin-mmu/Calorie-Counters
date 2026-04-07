@@ -68,18 +68,19 @@ export default function BarcodeScanner() {
         </View>
       </SafeAreaView>
 
-
       <CameraView
       // Set up the camera view with the barcode scanning handler and configure it to scan EAN-8 and EAN-13 barcodes. 
         onBarcodeScanned={handleBarcodeScanned}
         style={styles.camera} 
         facing={'back'}
         barcodeScannerSettings={{ barcodeTypes: ["ean8", "ean13"] }}
-      >
-        <View style={styles.overlay}>
-          <View style={styles.scannerFrame} />
-        </View>
-      </CameraView>
+      />
+
+      {/* Overlay moved OUTSIDE CameraView */}
+      <View style={styles.overlay}>
+        <View style={styles.scannerFrame} />
+      </View>
+
     </View>
   );
 }
@@ -122,17 +123,20 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   overlay : {
-    flex: 1,
-    backgroundColor: "transparent",
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
   scannerFrame: {
-  width: 320,
-  height: 250,
-  borderColor: 'white',
-  borderWidth: 3,
-  borderRadius: 30,
-  borderStyle: 'solid',
-}
+    width: 320,
+    height: 250,
+    borderColor: 'white',
+    borderWidth: 3,
+    borderRadius: 30,
+    borderStyle: 'solid',
+  }
 });
