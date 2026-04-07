@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useRouter } from "expo-router";
@@ -23,6 +23,14 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
+
+      {/* Back button */}
+      <TouchableOpacity
+        onPress={() => router.replace("/splash")}
+        style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>
+      </TouchableOpacity>
 
       {/* Email label */}
       <Text>Email</Text>

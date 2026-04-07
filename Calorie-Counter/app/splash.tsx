@@ -78,10 +78,9 @@ export default function Splash() {
       </View>
     );
   };
-
+{/* Main container for the splash screen */}
   return (  
-    <View style={styles.container}>
-      {/* Main container for the splash screen */}
+    <View style={styles.container}> 
 
       <View style={{ height: screenHeight * 0.8 }}>
         <FlatList
@@ -99,9 +98,8 @@ export default function Splash() {
       <View style={styles.dotContainer}>{renderDots()}</View>
 
       {/* SIMPLE BUTTON TO GO TO Account creation screen */}
-      {/* redirects to signup */}
       <TouchableOpacity
-        onPress={() => router.replace("/signUp")}
+        onPress={() => router.replace("/signUp")}   // redirects to signup
         style={{
           backgroundColor: "green",
           paddingVertical: 14,
@@ -119,9 +117,8 @@ export default function Splash() {
       </TouchableOpacity>
 
       {/* SIMPLE BUTTON TO GO TO LOGIN */}
-      {/* redirects to login */}
       <TouchableOpacity
-        onPress={() => router.replace("/login")}
+        onPress={() => router.replace("/login")}   // redirects to login
         style={{
           backgroundColor: "gray",
           paddingVertical: 14,
