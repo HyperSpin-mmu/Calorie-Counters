@@ -1,23 +1,35 @@
 import { Text, View, StyleSheet } from "react-native";
-import { auth } from "../../firebase"; 
-import { useLocalSearchParams } from "expo-router";
+import { auth, db } from "../../firebase"; // import Firestore
+import { doc, getDoc } from "firebase/firestore"; // Firestore functions
+import { useEffect, useState } from "react";
 
 // This is the main page of the app. It loads after onboarding + BMI flow.
 // It receives all user data passed through navigation.
 export default function Index() {
   const user = auth.currentUser; // Get the currently logged-in user
 
-  // Receive all params passed from the BMIResultScreen
-  const { 
-    motivation, 
-    activity, 
-    height, 
-    weight, 
-    age, 
-    sex, 
-    bmi,
-    calorieGoal // <-- added calorie goal
-  } = useLocalSearchParams();
+  //local state to store the user's Firestore profile
+  const [profile, setProfile] = useState<any>(null);
+
+  //Load user profile from Firestore using their UID
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return; // safety check
+
+      // Reference the user's document in Firestore
+      const ref = doc(db, "users", user.uid);
+
+      // Fetch the document
+      const snap = await getDoc(ref);
+
+      // If the document exists, store the data in state
+      if (snap.exists()) {
+        setProfile(snap.data());
+      }
+    };
+
+    loadProfile(); // call the async function
+  }, [user]); // re-run if user changes
 
   return (
     <View style={styles.container}>
@@ -29,43 +41,43 @@ export default function Index() {
       )}
 
       {/* Display motivation */}
-      {motivation && (
-        <Text style={styles.info}>Motivation: {motivation}</Text>
+      {profile?.motivation && (
+        <Text style={styles.info}>Motivation: {profile.motivation}</Text>
       )}
 
       {/* Display activity level */}
-      {activity && (
-        <Text style={styles.info}>Activity Level: {activity}</Text>
+      {profile?.activity && (
+        <Text style={styles.info}>Activity Level: {profile.activity}</Text>
       )}
 
       {/* Display height */}
-      {height && (
-        <Text style={styles.info}>Height: {height} cm</Text>
+      {profile?.height && (
+        <Text style={styles.info}>Height: {profile.height} cm</Text>
       )}
 
       {/* Display weight */}
-      {weight && (
-        <Text style={styles.info}>Weight: {weight} kg</Text>
+      {profile?.weight && (
+        <Text style={styles.info}>Weight: {profile.weight} kg</Text>
       )}
 
       {/* Display age */}
-      {age && (
-        <Text style={styles.info}>Age: {age}</Text>
+      {profile?.age && (
+        <Text style={styles.info}>Age: {profile.age}</Text>
       )}
 
       {/* Display sex */}
-      {sex && (
-        <Text style={styles.info}>Sex: {sex}</Text>
+      {profile?.sex && (
+        <Text style={styles.info}>Sex: {profile.sex}</Text>
       )}
 
       {/* Display BMI */}
-      {bmi && (
-        <Text style={styles.info}>BMI: {bmi}</Text>
+      {profile?.bmi && (
+        <Text style={styles.info}>BMI: {profile.bmi}</Text>
       )}
 
       {/* Display calorie goal */}
-      {calorieGoal && (
-        <Text style={styles.info}>Calorie Goal: {calorieGoal} kcal</Text>
+      {profile?.calorieGoal && (
+        <Text style={styles.info}>Calorie Goal: {profile.calorieGoal} kcal</Text>
       )}
     </View>
   );
