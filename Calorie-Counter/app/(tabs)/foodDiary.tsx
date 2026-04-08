@@ -43,6 +43,15 @@ export default function FoodDiary() {
     setSelectedDay(`${year}-${month}-${day}`);
   }
 
+  const formattedSelectedDay = new Date(`${selectedDay}T00:00:00`).toLocaleDateString(
+    "en-GB",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }
+  );
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Food Diary</Text>
@@ -51,7 +60,7 @@ export default function FoodDiary() {
           <Text style={styles.dateButtonText}>Previous</Text>
         </TouchableOpacity>
 
-        <Text style={styles.dateText}>{selectedDay}</Text>
+        <Text style={styles.dateText}>{formattedSelectedDay}</Text>
 
         <TouchableOpacity style={styles.dateButton} onPress={() => changeDay(1)}>
           <Text style={styles.dateButtonText}>Next</Text>
