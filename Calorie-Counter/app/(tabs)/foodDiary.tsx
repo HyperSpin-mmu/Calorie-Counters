@@ -99,6 +99,11 @@ export default function FoodDiary() {
                 <View key={entry.id} style={styles.entryRow}>
                   <View style={styles.entryTextWrap}>
                     <Text style={styles.entryName}>{entry.name}</Text>
+                    {entry.quantity && entry.unit ? (
+                      <Text style={styles.entryPortion}>
+                        {entry.quantity} {entry.unit}
+                      </Text>
+                    ) : null}
                     <Text style={styles.entryDetails}>
                       {entry.calories} kcal • {entry.protein}g protein • {entry.carbs}g carbs • {entry.fat}g fat
                     </Text>
@@ -218,6 +223,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#111111",
     marginBottom: 4,
+  },
+  entryPortion: {
+  fontSize: 13,
+  color: "#777777",
+  marginBottom: 4,
   },
   entryDetails: {
     fontSize: 14,
