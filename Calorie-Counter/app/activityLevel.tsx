@@ -21,6 +21,15 @@ export default function ActivityLevelScreen() {
 
   return (
     <View style={styles.container}>
+
+      {/* Back button */}
+      <TouchableOpacity
+        onPress={() => router.replace("/motivation")}
+        style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>
+      </TouchableOpacity>
+
       <Text style={styles.title}>Select your activity level</Text>
 
       <TouchableOpacity style={styles.button} onPress={() => handleSelect("inactive")}>

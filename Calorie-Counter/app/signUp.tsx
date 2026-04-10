@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useRouter } from "expo-router";
@@ -30,6 +30,15 @@ export default function Signup() {
 
   return (
     <View style={styles.container}>
+
+      {/* Back button */}
+      <TouchableOpacity
+        onPress={() => router.replace("/splash")}
+        style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>
+      </TouchableOpacity>
+
       <Text>Email</Text>
       <TextInput
         style={styles.input}

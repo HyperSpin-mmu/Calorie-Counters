@@ -21,6 +21,15 @@ export default function MotivationScreen() {
 
   return (
     <View style={styles.container}>
+
+      {/* Back button */}
+      <TouchableOpacity
+        onPress={() => router.replace("/signUp")}
+        style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>
+      </TouchableOpacity>
+
       <Text style={styles.title}>Select your motivation</Text>
 
       <TouchableOpacity style={styles.button} onPress={() => handleSelect("lose")}>

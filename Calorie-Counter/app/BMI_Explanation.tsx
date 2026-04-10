@@ -20,6 +20,15 @@ export default function ActivityLevelScreen() {
 
   return (
     <View style={styles.container}>
+
+      {/* Back button */}
+      <TouchableOpacity
+        onPress={() => router.replace("/activitylevel")}
+        style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>
+      </TouchableOpacity>
+
       <Text style={styles.title}>Let's calculate your BMI</Text>
 
       <Text style={styles.subtitle}>
