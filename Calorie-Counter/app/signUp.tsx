@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-import { useRouter } from "expo-router";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 export default function Signup() {
   const router = useRouter();
+  const { height, weight, age, sex, motivation, activity, bmi, calorieGoal } = useLocalSearchParams();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -21,8 +24,29 @@ export default function Signup() {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.replace("/motivation"); // needs to be replaces with motivation screen
+      // 1. Create the Firebase user
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid;
+
+      // 2. Save onboarding data to Firestore
+      await setDoc(
+        doc(db, "users", uid),
+        {
+          height,
+          weight,
+          age,
+          sex,
+          motivation,
+          activity,
+          bmi,
+          calorieGoal,
+          updatedAt: Date.now(),
+        },
+        { merge: true }
+      );
+
+      // 3. Navigate to main app
+      router.replace("/(tabs)");
     } catch (err: any) {
       setError(err.message);
     }
@@ -33,7 +57,7 @@ export default function Signup() {
 
       {/* Back button */}
       <TouchableOpacity
-        onPress={() => router.replace("/splash")}
+        onPress={() => router.replace("/BMI_Explanation")}
         style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
       >
         <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>

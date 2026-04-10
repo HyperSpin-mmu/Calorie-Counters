@@ -24,7 +24,7 @@ export default function MotivationScreen() {
 
       {/* Back button */}
       <TouchableOpacity
-        onPress={() => router.replace("/signUp")}
+        onPress={() => router.replace("/splash")}
         style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
       >
         <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>
