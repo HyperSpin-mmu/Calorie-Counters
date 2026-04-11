@@ -24,11 +24,31 @@ export default function Signup() {
     }
 
     try {
-      // 1. Create the Firebase user
+      // Create the Firebase user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
 
-      // 2. Save onboarding data to Firestore
+      // --- Macro Calculations ---
+      const w = Number(weight);
+      const cals = Number(calorieGoal);
+
+      // Protein (g)
+      let proteinPerKg = 1.6;
+      if (motivation === "lose") proteinPerKg = 2.0;
+      if (motivation === "gain") proteinPerKg = 1.8;
+      const proteinGoal = Math.round(w * proteinPerKg);
+      const proteinCalories = proteinGoal * 4;
+
+      // Fat (g)
+      const fatCalories = cals * 0.30;
+      const fatGoal = Math.round(fatCalories / 9);
+
+      // Carbs (g)
+      const remainingCalories = cals - (proteinCalories + fatCalories);
+      const carbGoal = Math.round(remainingCalories / 4);
+      // --------------------------
+
+      // Save onboarding data to Firestore
       await setDoc(
         doc(db, "users", uid),
         {
@@ -40,12 +60,15 @@ export default function Signup() {
           activity,
           bmi,
           calorieGoal,
+          proteinGoal,
+          fatGoal,
+          carbGoal,
           updatedAt: Date.now(),
         },
         { merge: true }
       );
 
-      // 3. Navigate to main app
+      // Navigate to main app
       router.replace("/(tabs)");
     } catch (err: any) {
       setError(err.message);

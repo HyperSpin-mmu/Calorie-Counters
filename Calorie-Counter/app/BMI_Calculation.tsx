@@ -14,18 +14,18 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 
 export default function BMICalculatorScreen() {
   
-  const { motivation, activity } = useLocalSearchParams();
+  const { motivation, activity } = useLocalSearchParams();  // Get motivation and activity level from previous screen parameters
   const router = useRouter();
 
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [age, setAge] = useState("");
-  const [sex, setSex] = useState("female");
+  const [height, setHeight] = useState(""); // State to store height input
+  const [weight, setWeight] = useState(""); // State to store weight input
+  const [age, setAge] = useState(""); // State to store age input
+  const [sex, setSex] = useState("female"); // State to store sex input, default is "female"
 
 const handleCalculate = () => {
   router.push({
     pathname: "/BMI_results",
-    params: {
+    params: { // Pass all the collected parameters to the BMI_results screen
       height,
       weight,
       age,

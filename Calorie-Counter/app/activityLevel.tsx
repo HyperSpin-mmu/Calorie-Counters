@@ -11,7 +11,7 @@ export default function ActivityLevelScreen() {
     setSelectedLevel(level);
 
     router.push({
-      pathname: "/BMI_Explanation",   // or wherever you want to go next
+      pathname: "/BMI_Explanation",   // wherever you want to go next
       params: { 
         activity: level,
         motivation: motivation,   // passing values forward

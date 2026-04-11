@@ -79,6 +79,21 @@ export default function Index() {
       {profile?.calorieGoal && (
         <Text style={styles.info}>Calorie Goal: {profile.calorieGoal} kcal</Text>
       )}
+
+      {/* Display protein goal */}
+      {profile?.proteinGoal && (
+        <Text style={styles.info}>Protein Goal: {profile.proteinGoal} g</Text>
+      )}
+
+      {/* Display fat goal */}
+      {profile?.fatGoal && (
+        <Text style={styles.info}>Fat Goal: {profile.fatGoal} g</Text>
+      )}
+
+      {/* Display carb goal */}
+      {profile?.carbGoal && (
+        <Text style={styles.info}>Carb Goal: {profile.carbGoal} g</Text>
+      )}
     </View>
   );
 }

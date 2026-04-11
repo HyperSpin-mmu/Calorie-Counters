@@ -41,7 +41,7 @@ const carouselData: CarouselItem[] = [  // Sample data for the carousel, each it
 ];
 
 export default function Splash() {  
-  const router = useRouter(); // <-- added
+  const router = useRouter(); 
   const [activeIndex, setActiveIndex] = React.useState(0);  // State to track the currently active carousel item index
 
   const handleScroll = (event: any) => {  // Calculate the active index based on the horizontal scroll position of the FlatList
