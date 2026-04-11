@@ -1,19 +1,36 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-
-// This is the root layout component specifically for the stack navigator. This manages pages that AREN'T 
-// part of the main tab navigator (The buttons at the bottom of the screen). If your page is not accessed by the tab navigator,
-// it needs to be added here. 
+// firebase imports
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
 export default function RootLayout() {
+  const router = useRouter();
+
+  // Load custom fonts
   const [loaded, error] = useFonts({
     'GoogleSans': require("../assets/fonts/GoogleSans-Regular.ttf"),
   });
 
+  // Firebase auth listener – runs once the app starts, checks if the user is logged in or out
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Logged in then go to tabs
+        router.replace("/(tabs)");
+      } else {
+        // Not logged in then go to login
+        router.replace("/splash");
+      }
+    });
+
+    return unsub;
+  }, []);
+
+  // Hide splash screen when fonts load
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
@@ -21,17 +38,27 @@ export default function RootLayout() {
   }, [loaded, error]);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" /> 
-          <Stack.Screen 
-              name="foodAmount" 
-              options={{ 
-                  headerShown: false, 
-                  animation : 'slide_from_right',
-              }} 
-          />
-      </Stack>
-    </GestureHandlerRootView>
+    <Stack screenOptions={{ headerShown: false }}>
+      {/* Main tab navigator */}
+      <Stack.Screen name="(tabs)" />
+
+      {/* Food amount screen */}
+      <Stack.Screen 
+        name="foodAmount"
+        options={{
+          headerShown: false,
+          animation: 'slide_from_right',
+        }}
+      />
+
+      {/* Login screen */}
+      <Stack.Screen 
+        name="login"
+        options={{
+          headerShown: false,
+          animation: 'fade',
+        }}
+      />
+    </Stack>
   );
 }
