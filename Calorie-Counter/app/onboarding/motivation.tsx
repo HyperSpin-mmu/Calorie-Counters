@@ -10,7 +10,7 @@ export default function MotivationScreen() {
     setSelectedMotivation(motivation);    // Update the selected motivation state when a button is pressed
     
     router.push({
-      pathname: "/activitylevel",
+      pathname: "/onboarding/activityLevel",
       params: { motivation },
     });
   };
@@ -20,7 +20,7 @@ export default function MotivationScreen() {
 
       {/* Back button */}
       <TouchableOpacity
-        onPress={() => router.replace("/splash")}
+        onPress={() => router.replace("/onboarding/splash")}
         style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
       >
         <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>

@@ -22,19 +22,19 @@ type CarouselItem = { // Define the structure of each item in the carousel
 const carouselData: CarouselItem[] = [  // Sample data for the carousel, each item has an id, image, title, and subtitle
   {
     id: "01",
-    image: require("../splash_assets/smile running.jpg"),
+    image: require("../../splash_assets/smile running.jpg"),
     title: "Track Your Calories",
     subtitle: "Stay on top of your daily intake with ease.",
   },
   {
     id: "02",
-    image: require("../splash_assets/smile running.jpg"),
+    image: require("../../splash_assets/smile running.jpg"),
     title: "Reach Your Goals",
     subtitle: "Set targets and watch your progress grow.",
   },
   {
     id: "03",
-    image: require("../splash_assets/smile running.jpg"),
+    image: require("../../splash_assets/smile running.jpg"),
     title: "Stay Motivated",
     subtitle: "Healthy habits start with small steps.",
   },
@@ -99,7 +99,7 @@ export default function Splash() {
 
       {/* SIMPLE BUTTON TO GO TO Account creation screen */}
       <TouchableOpacity
-        onPress={() => router.replace("/motivation")}   // redirects to signup
+        onPress={() => router.replace("/onboarding/motivation")}   // redirects to signup
         style={{
           backgroundColor: "green",
           paddingVertical: 14,
@@ -118,7 +118,7 @@ export default function Splash() {
 
       {/* SIMPLE BUTTON TO GO TO LOGIN */}
       <TouchableOpacity
-        onPress={() => router.replace("/login")}   // redirects to login
+        onPress={() => router.replace("/onboarding/login")}   // redirects to login
         style={{
           backgroundColor: "gray",
           paddingVertical: 14,

@@ -10,7 +10,7 @@ export default function ActivityLevelScreen() {
 
   const handleContinue = () => {
     router.push({
-      pathname: "/BMI_Calculation",
+      pathname: "/onboarding/BMI_Calculation",
       params: {
         motivation,
         activity,
@@ -23,7 +23,7 @@ export default function ActivityLevelScreen() {
 
       {/* Back button */}
       <TouchableOpacity
-        onPress={() => router.replace("/activitylevel")}
+        onPress={() => router.replace("/onboarding/activityLevel")}
         style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
       >
         <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>

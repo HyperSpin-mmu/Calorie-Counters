@@ -23,7 +23,7 @@ export default function RootLayout() {
         router.replace("/(tabs)");
       } else {
         // Not logged in then go to login
-        router.replace("/splash");
+        router.replace("/onboarding/splash");
       }
     });
 

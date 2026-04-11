@@ -46,7 +46,7 @@ export default function BMIResultScreen() {
   // When user presses continue
   const handleContinue = async () => {
     router.push({
-      pathname: "/signUp",
+      pathname: "/onboarding/signUp",
       params: {
         height,
         weight,

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../../firebase";
 import { useRouter } from "expo-router";
 
 export default function Login() {
@@ -26,7 +26,7 @@ export default function Login() {
 
       {/* Back button */}
       <TouchableOpacity
-        onPress={() => router.replace("/splash")}
+        onPress={() => router.replace("/onboarding/splash")}
         style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
       >
         <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>
