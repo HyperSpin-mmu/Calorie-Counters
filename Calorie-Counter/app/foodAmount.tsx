@@ -213,7 +213,7 @@ return (
                   maxLength={5}
                   placeholder="1"
                   placeholderTextColor="#999"
-                  selectiononColor="#007AFF"
+                  selectionColor="#007AFF"
                   autoCorrect={false}
                   autoCapitalize="none"
                 />
