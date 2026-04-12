@@ -2,13 +2,13 @@
 // It uses the shared structure from Sprint 1 so the diary data stays consistent.
 
 import { create } from "zustand";
-import type { FoodLogEntry } from "@/app/types/food";
+import type { FoodLogEntry } from "../types/food";
 import {
   calculateMacroTotals,
   filterEntriesByDay,
   getLocalDayKey,
   groupEntriesByMealType,
-} from "@/app/utils/diary";
+} from "../utils/diary";
 
 // This covers the diary data and the actions the store needs to provide.
 interface DiaryState {
