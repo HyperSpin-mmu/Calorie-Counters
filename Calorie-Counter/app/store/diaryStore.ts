@@ -1,95 +1,45 @@
-// This store keeps the food diary entries in one place.
-// It uses the shared structure from Sprint 1 so the diary data stays consistent.
+// This module defines a Zustand store for managing the user's food diary entries in the Calorie Counter app. 
+// It provides actions to add, remove, and clear diary entries, allowing users to keep track of their meals and 
+// nutritional intake effectively.
 
-import { create } from "zustand";
-import type { FoodLogEntry } from "../types/food";
-import {
-  calculateMacroTotals,
-  filterEntriesByDay,
-  getLocalDayKey,
-  groupEntriesByMealType,
-} from "../utils/diary";
+import { create } from 'zustand';
 
-// This covers the diary data and the actions the store needs to provide.
-interface DiaryState {
-  // All food entries currently stored in the diary.
-  entries: FoodLogEntry[];
-
-  // The day currently being viewed in the diary.
-  // Stored as a local day key like "2026-03-16".
-  selectedDay: string;
-
-  // Add a new food entry to the diary.
-  addEntry: (newEntry: FoodLogEntry) => void;
-
-  // Remove one entry by id.
-  removeEntry: (id: string) => void;
-
-  // Update part of an existing entry.
-  updateEntry: (id: string, updatedFields: Partial<FoodLogEntry>) => void;
-
-  // Change the day the user is viewing.
-  setSelectedDay: (day: string) => void;
-
-  // Remove all diary entries.
-  clearDiary: () => void;
-
-  // Get entries that belong to the currently selected day.
-  getEntriesForSelectedDay: () => FoodLogEntry[];
-
-  // Group the current day's entries by meal type.
-  getGroupedEntriesForSelectedDay: () => ReturnType<typeof groupEntriesByMealType>;
-
-  // Calculate calorie and macro totals for the selected day.
-  getMacroTotalsForSelectedDay: () => ReturnType<typeof calculateMacroTotals>;
+// This store manages the state of the user's food diary entries.
+export interface DiaryEntry {
+  id: string;
+  foodItem: string;
+  brand: string;
+  amount: string;
+  unit: string;
+  mealType: string;
+  macros: {
+    calories: number;
+    carbs: string;
+    protein: string;
+    fat: string;
+  };
+  timestamp: string;
 }
 
-// We use today's local day as the default starting point.
-const today = getLocalDayKey(Date.now());
+// The DiaryState interface defines the structure of the state and the actions available for managing diary entries.
+interface DiaryState {
+  entries: DiaryEntry[];
+  addEntry: (newEntry: DiaryEntry) => void;
+  removeEntry: (id: string) => void;
+  clearDiary: () => void;
+}
 
-export const useDiaryStore = create<DiaryState>((set, get) => ({
+// The useDiaryStore hook provides access to the diary state and actions for adding, removing, and clearing entries in the user's food diary.
+export const useDiaryStore = create<DiaryState>((set) => ({
   entries: [],
-  selectedDay: today,
 
-  addEntry: (newEntry) =>
-    set((state) => ({
-      entries: [...state.entries, newEntry],
-    })),
+  addEntry: (newEntry) => set((state) => ({ 
+    entries: [...state.entries, newEntry] 
+  })),
 
-  removeEntry: (id) =>
-    set((state) => ({
-      entries: state.entries.filter((entry) => entry.id !== id),
-    })),
+  removeEntry: (id) => set((state) => ({ 
+    entries: state.entries.filter((entry) => entry.id !== id) 
+  })),
 
-  updateEntry: (id, updatedFields) =>
-    set((state) => ({
-      entries: state.entries.map((entry) =>
-        entry.id === id ? { ...entry, ...updatedFields } : entry
-      ),
-    })),
-
-  setSelectedDay: (day) =>
-    set({
-      selectedDay: day,
-    }),
-
-  clearDiary: () =>
-    set({
-      entries: [],
-    }),
-
-  getEntriesForSelectedDay: () => {
-    const { entries, selectedDay } = get();
-    return filterEntriesByDay(entries, selectedDay);
-  },
-
-  getGroupedEntriesForSelectedDay: () => {
-    const selectedEntries = get().getEntriesForSelectedDay();
-    return groupEntriesByMealType(selectedEntries);
-  },
-
-  getMacroTotalsForSelectedDay: () => {
-    const selectedEntries = get().getEntriesForSelectedDay();
-    return calculateMacroTotals(selectedEntries);
-  },
+  clearDiary: () => set({ entries: [] }),
 }));

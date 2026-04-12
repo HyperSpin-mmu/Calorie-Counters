@@ -1,85 +1,68 @@
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  ScrollView,
-  Alert,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import { useRouter } from "expo-router";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { fetchFoodData } from "./services/api";
+import { use, useEffect, useState } from "react";
+import { Text, View, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, Alert, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import { useRouter} from 'expo-router';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { fetchFoodData } from "./services/api"; 
 import { useDiaryStore } from "./store/diaryStore";
-import type { MealType } from "./types/food";
-import { mapBarcodeFoodToDiaryEntry } from "./utils/barcodeToDiary";
-
-type FoodData = Awaited<ReturnType<typeof fetchFoodData>>;
 
 
 // This screen is navigated to from the barcode scanner screen, it receives the scanned data as a parameter and displays it.
 export default function foodAmountScreen() {
 
-  const [foodData, setFoodData] = useState<FoodData | null>(null);
+  const [foodData, setFoodData] = useState<{ name: any; brand: any; calories: any; carbs: any; protein: any; fat: any; } | null>(null);
 
   // Get the scanned data from the navigation parameters passed from the barcode scanner screen. 
-  const addEntry = useDiaryStore((state) => state.addEntry);
+  const addEntry = useDiaryStore((state: any) => state.addEntry);
   const { scannedData } = useLocalSearchParams();
   const router = useRouter();
-
-  // Temporary user id until the auth flow is connected properly.
-  // This keeps the diary entry shape correct for now.
-  const TEMP_USER_ID = "temp-user";
 
   // Set up state for the amount, unit, and meal type inputs, as well as the food data and loading status.
   const [amount, setAmount] = useState("1");
   const [unit, setUnit] = useState("serving");
-  const [mealType, setMealType] = useState<MealType>("breakfast");
+  const [mealType, setMealType] = useState("breakfast");
 
-  // When the user confirms the item, it is converted into the diary format and saved in the Zustand store.
+  // Handle the "Add to Diary" button press, show an alert and navigate to the food diary screen if the user chooses to view the diary.
   const handleAddToDiary = () => {
     if (!foodData) return;
 
-    const diaryEntry = mapBarcodeFoodToDiaryEntry({
-      food: {
-        name: foodData.name,
-        brand: foodData.brand,
-        calories: calculateAdjustedValue(foodData.calories),
-        carbs: calculateAdjustedValue(foodData.carbs),
-        protein: calculateAdjustedValue(foodData.protein),
-        fat: calculateAdjustedValue(foodData.fat),
+    const diaryEntry = {
+      id : Date.now().toString(),
+      name: foodData.name,
+      brand: foodData.brand,
+      amount: amount,
+      unit: unit,
+      mealType: mealType,
+      macros: {
+        calories: calculateMacro(foodData.calories),
+        carbs: calculateMacro(foodData.carbs),
+        protein: calculateMacro(foodData.protein),
+        fat: calculateMacro(foodData.fat),
       },
-      userId: TEMP_USER_ID,
-      mealType,
-      barcode: typeof scannedData === "string" ? scannedData : undefined,
-      quantity: parseFloat(amount) || 1,
-      unit,
-    });
+      timestamp: new Date().toISOString(),
+    };
 
-    addEntry(diaryEntry);
+    // addEntry(diaryEntry); // THIS IS WHERE THE ENTRY IS ADDED TO THE DIARY STORE -------------------> 
 
     Alert.alert(
-      "Food Added! 🎉",
+      "Food Added! 🎉", 
       "This food item has been added to your diary.",
       [
         {
+          // Option to view the diary, which navigates to the food diary screen.
           text: "View Diary",
-          onPress: () => router.navigate("/foodDiary"),
+          onPress: () => router.navigate('/foodDiary'),
         },
         {
+          // Option to add more food items, which navigates back to the barcode scanner screen.
           text: "Add More",
           style: "cancel",
-          onPress: () => router.replace("/action"),
+          onPress: () => router.replace('/action'),
         },
       ]
     );
-  };
+  }
 
   // State to hold the fetched food data and loading status.
   const [isLoading, setIsLoading] = useState(true);
@@ -111,26 +94,23 @@ export default function foodAmountScreen() {
   }, [scannedData]);
 
   // Function to calculate the adjusted macro values based on the entered amount and selected unit.
-  // This works out the final nutrition value based on the amount and unit chosen by the user.
-  // We return a number here because the diary store expects numeric values, not strings.
-  const calculateAdjustedValue = (baseValue: number | string): number => {
-    if (baseValue === null || baseValue === undefined || isNaN(Number(baseValue))) {
-      return 0;
-    }
+  const calculateMacro = (baseValue: any) => {
+    if (!baseValue || isNaN(baseValue)) return 0;
 
-    const numericValue = Number(baseValue);
+    // Parse the base value and the entered amount as numbers, defaulting to 0 if the amount is not a valid number.
+    const numericValue = parseFloat(baseValue as string);
     const amountValue = parseFloat(amount) || 0;
 
+    // Amount multiplier based on selected unit.
     let multiplier = 1;
 
     if (unit === "g" || unit === "ml") {
       multiplier = amountValue / 100;
-    
     } else {
       multiplier = amountValue;
     }
-
-    return Math.round(numericValue * multiplier);
+    // Calculate the adjusted macro value by multiplying the base value with the multiplier and rounding to 0 decimal places.
+    return (numericValue * multiplier).toFixed(0);
   };
 
   
@@ -172,7 +152,7 @@ return (
               
               {/* Calories */}
               <View style={styles.calorieContainer}>
-                <Text style={styles.calorieValue}>{calculateAdjustedValue(foodData.calories)}</Text>
+                <Text style={styles.calorieValue}>{calculateMacro(foodData.calories)}</Text>
                 <Text style={styles.calorieLabel}>kcal</Text>
               </View>
 
@@ -180,17 +160,17 @@ return (
               <View style={styles.macroRow}>
                 {/* Carbs */}
                 <View style={[styles.macroBox, { backgroundColor: '#E3F2FD' }]}>
-                  <Text style={styles.macroValue}>{calculateAdjustedValue(foodData.carbs)}g</Text>
+                  <Text style={styles.macroValue}>{calculateMacro(foodData.carbs)}g</Text>
                   <Text style={styles.macroLabel}>Carbs</Text>
                 </View>
                 {/* Protein */}
                 <View style={[styles.macroBox, { backgroundColor: '#E8F5E9' }]}>
-                  <Text style={styles.macroValue}>{calculateAdjustedValue(foodData.protein)}g</Text>
+                  <Text style={styles.macroValue}>{calculateMacro(foodData.protein)}g</Text>
                   <Text style={styles.macroLabel}>Protein</Text>
                 </View>
                 {/* Fat */}
                 <View style={[styles.macroBox, { backgroundColor: '#FFF3E0' }]}>
-                  <Text style={styles.macroValue}>{calculateAdjustedValue(foodData.fat)}g</Text>
+                  <Text style={styles.macroValue}>{calculateMacro(foodData.fat)}g</Text>
                   <Text style={styles.macroLabel}>Fat</Text>
                 </View>
               </View>
@@ -248,7 +228,7 @@ return (
               
               {/* Meal type selection buttons, allowing the user to categorize the food item as breakfast, lunch, dinner, or snack. The active meal type is highlighted to indicate the current selection. */}
               <View style={styles.mealTypeContainer}>
-                {(["breakfast", "lunch", "dinner", "snack"] as MealType[]).map((meal) => (
+                {['Breakfast', 'Lunch', 'Dinner', 'Snack'].map((meal) => (
                   <TouchableOpacity
                     key={meal}
                     style={[
@@ -257,13 +237,11 @@ return (
                     ]}
                     onPress={() => setMealType(meal)}
                   >
-                    <Text
-                      style={[
-                        styles.mealButtonText,
-                        mealType === meal && styles.mealButtonTextActive
-                      ]}
-                    >
-                      {meal.charAt(0).toUpperCase() + meal.slice(1)}
+                    <Text style={[
+                      styles.mealButtonText,
+                      mealType === meal && styles.mealButtonTextActive
+                    ]}>
+                      {meal}
                     </Text>
                   </TouchableOpacity>
                 ))}
