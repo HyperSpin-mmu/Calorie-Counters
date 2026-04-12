@@ -52,13 +52,13 @@ export default function foodAmountScreen() {
         {
           // Option to view the diary, which navigates to the food diary screen.
           text: "View Diary",
-          onPress: () => router.navigate('/foodDiary'),
+          onPress: () => router.navigate('/(tabs)/foodDiary'),
         },
         {
           // Option to add more food items, which navigates back to the barcode scanner screen.
           text: "Add More",
           style: "cancel",
-          onPress: () => router.replace('/action'),
+          onPress: () => router.replace('/(tabs)/action'),
         },
       ]
     );

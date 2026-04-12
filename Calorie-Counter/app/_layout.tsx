@@ -3,6 +3,7 @@ import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { useAuthStore } from './store/authStore';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // firebase imports
 import { onAuthStateChanged } from "firebase/auth";
@@ -45,27 +46,30 @@ export default function RootLayout() {
   }, [loaded, error]);
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {/* Main tab navigator */}
-      <Stack.Screen name="(tabs)" />
+    // <-- Wrapped the Stack in GestureHandlerRootView with flex: 1
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }}>
+        {/* Main tab navigator */}
+        <Stack.Screen name="(tabs)" />
 
-      {/* Food amount screen */}
-      <Stack.Screen 
-        name="foodAmount"
-        options={{
-          headerShown: false,
-          animation: 'slide_from_right',
-        }}
-      />
+        {/* Food amount screen */}
+        <Stack.Screen 
+          name="foodAmount"
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
+          }}
+        />
 
-      {/* Login screen */}
-      <Stack.Screen 
-        name="login"
-        options={{
-          headerShown: false,
-          animation: 'fade',
-        }}
-      />
-    </Stack>
+        {/* Login screen */}
+        <Stack.Screen 
+          name="login"
+          options={{
+            headerShown: false,
+            animation: 'fade',
+          }}
+        />
+      </Stack>
+    </GestureHandlerRootView>
   );
 }
