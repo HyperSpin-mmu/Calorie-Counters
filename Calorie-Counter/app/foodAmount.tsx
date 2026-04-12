@@ -187,10 +187,15 @@ return (
                 <TextInput
                   style={styles.numberInput}
                   keyboardType="numeric"
+                  inputMode="numeric"
                   value={amount}
                   onChangeText={setAmount}
                   maxLength={5}
-                  selectTextOnFocus 
+                  placeholder="1"
+                  placeholderTextColor="#999"
+                  selectionColor="#007AFF"
+                  autoCorrect={false}
+                  autoCapitalize="none"
                 />
 
                 {/* Unit Toggle Buttons */}
@@ -440,7 +445,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginRight: 10,
-    color: '#888',
+    color: '#222',
+    borderWidth: 1,
+    borderColor: '#E0E0E0'
   },
 
   // Unit Toggle Styles
