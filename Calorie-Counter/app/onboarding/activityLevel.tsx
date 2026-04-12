@@ -11,7 +11,7 @@ export default function ActivityLevelScreen() {
     setSelectedLevel(level);
 
     router.push({
-      pathname: "/onboarding/BMI_Explanation",   // wherever you want to go next
+      pathname: "../onboarding/BMI_Explanation",   // wherever you want to go next
       params: { 
         activity: level,
         motivation: motivation,   // passing values forward
@@ -24,7 +24,7 @@ export default function ActivityLevelScreen() {
 
       {/* Back button */}
       <TouchableOpacity
-        onPress={() => router.replace("/onboarding/motivation")}
+        onPress={() => router.replace("../onboarding/motivation")}
         style={{ position: "absolute", top: 50, left: 20, padding: 10 }}
       >
         <Text style={{ fontSize: 20, fontWeight: "600" }}>← Back</Text>

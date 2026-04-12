@@ -43,7 +43,7 @@ export default function foodAmountScreen() {
       timestamp: new Date().toISOString(),
     };
 
-    // addEntry(diaryEntry); // THIS IS WHERE THE ENTRY IS ADDED TO THE DIARY STORE -------------------> 
+    addEntry(diaryEntry); // THIS IS WHERE THE ENTRY IS ADDED TO THE DIARY STORE -------------------> 
 
     Alert.alert(
       "Food Added! 🎉", 

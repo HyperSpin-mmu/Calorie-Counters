@@ -1,22 +1,25 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-// This is the food diary screen, it is currently a placeholder and will be implemented later.
 export default function FoodDiary() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <Text style={styles.title}>Food Diary</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#F5F5F5',
   },
   title: {
     fontSize: 28,
     fontFamily: "GoogleSans",
-  }
+    fontWeight: 'bold',
+    textAlign: "center",
+    marginVertical: 20,
+    color: '#333',
+  },
 });

@@ -3,6 +3,9 @@
 // nutritional intake effectively.
 
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuthStore } from './authStore';
 
 // This store manages the state of the user's food diary entries.
 export interface DiaryEntry {
@@ -29,8 +32,9 @@ interface DiaryState {
   clearDiary: () => void;
 }
 
+
 // The useDiaryStore hook provides access to the diary state and actions for adding, removing, and clearing entries in the user's food diary.
-export const useDiaryStore = create<DiaryState>((set) => ({
+export const useDiaryStore = create<DiaryState>()(persist((set) => ({
   entries: [],
 
   addEntry: (newEntry) => set((state) => ({ 
@@ -42,4 +46,8 @@ export const useDiaryStore = create<DiaryState>((set) => ({
   })),
 
   clearDiary: () => set({ entries: [] }),
+}) , {
+
+  name : 'default-diary', // Name of the storage key for persistence
+  storage: createJSONStorage(() => AsyncStorage), // Use AsyncStorage for persistence
 }));

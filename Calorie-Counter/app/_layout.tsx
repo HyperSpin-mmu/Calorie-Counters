@@ -2,13 +2,16 @@ import { Stack, useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+import { useAuthStore } from './store/authStore';
 
 // firebase imports
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
+import { useDiaryStore } from './store/diaryStore';
 
 export default function RootLayout() {
   const router = useRouter();
+  const setUid = useAuthStore((state) => state.setUid);
 
   // Load custom fonts
   const [loaded, error] = useFonts({
@@ -19,11 +22,15 @@ export default function RootLayout() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Logged in then go to tabs
+        // User listener for zustand and authStore
+        useDiaryStore.persist.setOptions({ name: `diary-${user.uid}` }); // Set the storage key to the user's UID for diary persistence
+        useDiaryStore.persist.rehydrate(); // Rehydrate diary store with persisted data 
         router.replace("/(tabs)");
       } else {
-        // Not logged in then go to login
-        router.replace("/onboarding/splash");
+        // Not logged in then go to login and reset zustand
+        useDiaryStore.getState().clearDiary();
+        setUid(null); // Clear UID in authStore when user logs out
+        router.replace("/onboarding/splash"); // Redirect to splash screen if not logged in
       }
     });
 
