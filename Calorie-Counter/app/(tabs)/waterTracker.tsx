@@ -2,6 +2,10 @@ import { useState } from "react";
 import { Alert, Text, View, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function WaterTracker() {
   // Create two condition variable: true and false
   // using State
