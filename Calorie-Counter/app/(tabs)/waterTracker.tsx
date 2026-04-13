@@ -48,11 +48,11 @@ export default function WaterTracker() {
   if (!mounted) return null;
 
   // A boolean variable to track if the limit is exceeded
-  const isExceeded = unitValue === 'l' && Number(inputValue) > 1;
+  const isExceeded = unitValue === 'l' && Number(inputValue) > 1 || unitValue === 'ml' && Number(inputValue) > 1000;
 
   const handleSetWaterValue = () => {
     const amount = Number(inputValue);
-    if (amount > 1 && unitValue === 'l') {
+    if (amount > 1 && unitValue === 'l' || amount > 1000 && unitValue === 'ml') {
       Alert.alert("Exceeded limit (> 1l)");
     } else {
       setWaterMeasurement(amount, unitValue);
@@ -62,10 +62,36 @@ export default function WaterTracker() {
 
   const enableEnterButton = inputValue.trim() !== "" && !isNaN(Number(inputValue));
 
+  // Reactive Glass Fill Up
+  // Calculate total ML including what the user is currently typing
+  const typedAmount = !isNaN(Number(inputValue)) ? Number(inputValue) : 0;
+  const typedAmountMl = unitValue === 'l' ? typedAmount * 1000 : typedAmount;
+
+  const storedAmountMl = waterMeasurement.unit === 'l' 
+    ? waterMeasurement.amount * 1000 
+    : waterMeasurement.amount;
+
+  const displayTotalMl = storedAmountMl + typedAmountMl;
+
+  // Calculate how many blocks to show (1 block per 100ml)
+  const totalBlocks = Math.floor(displayTotalMl / 200);
+
   return (
     <View style={styles.container}>
       {isLogged ? (
-        <>
+        <>          
+          {/* --- Visual Glass Container --- */}
+          <View style={styles.glassContainer}>
+          <View style={styles.glassFrame}>
+            {Array.from({ length: totalBlocks }).map((_, index) => (
+              <View key={index} style={styles.waterBlock} />
+            ))}
+          </View>
+          <Text style={styles.glassLabel}>
+            {displayTotalMl}ml total ({totalBlocks} blocks)
+          </Text>
+        </View>
+
           <TextInput
             style={[ styles.textinput, isExceeded && { backgroundColor: 'red' } ]} // Override default if exceeded
             placeholder="e.g., 250"
@@ -160,5 +186,34 @@ const styles = StyleSheet.create({
     fontSize: 25,
     borderRadius: 5,
     height: 30
+  },
+  glassContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  glassFrame: {
+    width: 60,
+    height: 100,
+    maxHeight: 100, // Space for about 5 blocks (1.0L)
+    borderWidth: 3,
+    borderColor: '#333',
+    borderTopWidth: 0, // Open top like a glass
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    justifyContent: 'flex-end', // Fills from the bottom up
+    padding: 2,
+    backgroundColor: '#f0f0f0',
+  },
+  waterBlock: {
+    width: '100%',
+    height: 18, // Height of one block
+    backgroundColor: '#4285F4',
+    marginBottom: 2,
+    borderRadius: 2,
+  },
+  glassLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 5,
   }
 });
