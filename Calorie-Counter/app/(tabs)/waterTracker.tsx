@@ -25,11 +25,11 @@ export const useWaterState = create<WaterState>((set) => ({
 
 export default function WaterTracker() {
   const { isLogged, setIsLogged, waterMeasurement, setWaterMeasurement } = useWaterState();
-  const [inputValue, setInputValue] = useState('');
-  const [unitValue, setUnitValue] = useState('ml');
+  const [ inputValue, setInputValue ] = useState('');
+  const [ unitValue, setUnitValue ] = useState('ml');
   
   // Ensure the component is mounted before rendering
-  const [mounted, setMounted] = useState(false);
+  const [ mounted, setMounted ] = useState(false);
   
   // Manual Persist using the useEffect
   useEffect(() => {
@@ -47,10 +47,13 @@ export default function WaterTracker() {
 
   if (!mounted) return null;
 
+  // A boolean variable to track if the limit is exceeded
+  const isExceeded = unitValue === 'l' && Number(inputValue) > 1;
+
   const handleSetWaterValue = () => {
     const amount = Number(inputValue);
     if (amount > 1 && unitValue === 'l') {
-      Alert.alert("Exceeded limit (>1 l)");
+      Alert.alert("Exceeded limit (> 1l)");
     } else {
       setWaterMeasurement(amount, unitValue);
       setInputValue('');
@@ -64,7 +67,7 @@ export default function WaterTracker() {
       {isLogged ? (
         <>
           <TextInput
-            style={styles.textinput} 
+            style={[ styles.textinput, isExceeded && { backgroundColor: 'red' } ]} // Override default if exceeded
             placeholder="e.g., 250"
             maxLength={4}
             keyboardType="numeric"
@@ -120,7 +123,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    //minHeight: Platform.OS === 'web' ? '100vh' : 'auto',
   },
   title: {
     fontSize: 28,
