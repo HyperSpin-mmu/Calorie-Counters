@@ -2,36 +2,60 @@ import { useState } from "react";
 import { Alert, Text, View, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
+// -- Zustand Import Code --
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+interface WaterState {
+  isLogged: boolean;
+  waterMeasurement: { amount: number; unit: string };
+  setIsLogged: (val: boolean) => void;
+  setWaterMeasurement: (amount: number, unit: string) => void;
+}
+
+export const useWaterState = create<WaterState>()
+(
+  persist
+  (
+    (set) => ({
+      isLogged: false,
+      waterMeasurement: { amount: 0, unit: 'ml' },
+
+      setIsLogged: (val) => set({isLogged: val}),
+      setWaterMeasurement: (amount, unit) => set({ waterMeasurement: { amount, unit}}),
+    }),
+
+    {
+      name: 'water-tracker',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);
+// -- End of Code --
+
+// Updated code using Zustand
 export default function WaterTracker() {
-  // Create two condition variable: true and false
-  // using State
-  const [isLogged, setIsLogged] = useState(false) 
+  // Zustand imported state
+  const { isLogged, setIsLogged, waterMeasurement, setWaterMeasurement } = useWaterState();
 
   const [inputValue, setInputValue] = useState('') // -> empty variable
-
-  const [count, setCount] = useState(0)
-  const [text, setText] = useState('')
-
-  const [waterMeasurement, setWaterMeasurement] = useState({amount: 0, unit: ''}) // -> type number for 'amount' and string for 'unit'
   const [unitValue, setUnitValue] = useState('ml') // -> default value
 
   const handle = (text: string) => { // -> taking text as parameter (type string)
     setInputValue(text); // -> setting value as the user's input
   };
 
-  const handleSetWaterValue = (text: number) => { // (type number/integer)
+  const handleSetWaterValue = () => {
+    const amount = Number(inputValue);
     // If amount > 1 and unit == litres, stop program
-    if (text > 1 && unitValue == 'l') {
+    if (amount > 1 && unitValue == 'l') {
       Alert.alert("Exceeded limit (>1 l)")
     }
 
     else {
-      setWaterMeasurement({ amount: text, unit: unitValue }); // -> value stored here
-      setCount(0); setText(''); setInputValue('') // -> reset text input
+      setWaterMeasurement(amount, unitValue); // -> value stored here
+      setInputValue('') // -> reset text input
     }
   }
   
@@ -64,7 +88,7 @@ export default function WaterTracker() {
         {enableEnterButton && (
           <TouchableOpacity
           style={styles.button}
-          onPress={() => {handleSetWaterValue(Number(inputValue))}}
+          onPress={() => {handleSetWaterValue()}}
           ><Text style={styles.buttontext}>Enter</Text></TouchableOpacity>
         )}
 
