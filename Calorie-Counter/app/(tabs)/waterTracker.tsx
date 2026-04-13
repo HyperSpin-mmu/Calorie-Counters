@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Text, View, StyleSheet, TextInput, Pressable } from "react-native";
+import { Alert, Text, View, StyleSheet, TextInput, Platform, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
 // -- Safe Zustand Import --
@@ -105,6 +105,7 @@ export default function WaterTracker() {
             style={styles.picker} 
             selectedValue={unitValue} 
             onValueChange={(itemValue) => setUnitValue(itemValue)}
+            mode="dropdown"
           >
             <Picker.Item label="ml" value="ml"/>
             <Picker.Item label="l" value="l"/>
@@ -183,9 +184,10 @@ const styles = StyleSheet.create({
     fontSize: 25
   },
   picker: {
-    fontSize: 25,
-    borderRadius: 5,
-    height: 30
+    width: 150,           // Explicit width is required for Android/iOS
+    height: 50,           // Standard height for mobile touch targets
+    backgroundColor: Platform.OS === 'web' ? 'transparent' : '#f0f0f0', // Light gray background for mobile
+    color: 'black',       // Ensure text isn't white
   },
   glassContainer: {
     marginTop: 20,
