@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Alert, Text, View, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Alert, Text, View, StyleSheet, TextInput, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-// -- Zustand Import Code --
+// -- Safe Zustand Import --
+// Import directly from the 'vanilla' and 'react' entry points 
+// to avoid the middleware that usually causes the import.meta error.
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface WaterState {
   isLogged: boolean;
@@ -14,105 +14,91 @@ interface WaterState {
   setWaterMeasurement: (amount: number, unit: string) => void;
 }
 
-export const useWaterState = create<WaterState>()
-(
-  persist
-  (
-    (set) => ({
-      isLogged: false,
-      waterMeasurement: { amount: 0, unit: 'ml' },
+// Removing 'persist' for a moment to stop the 'import.meta' crash
+export const useWaterState = create<WaterState>((set) => ({
+  isLogged: false,
+  waterMeasurement: { amount: 0, unit: 'ml' },
+  setIsLogged: (val) => set({ isLogged: val }),
+  setWaterMeasurement: (amount, unit) => set({ waterMeasurement: { amount, unit } }),
+}));
 
-      setIsLogged: (val) => set({isLogged: val}),
-      setWaterMeasurement: (amount, unit) => set({ waterMeasurement: { amount, unit}}),
-    }),
-
-    {
-      name: 'water-tracker',
-      storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
-);
-// -- End of Code --
-
-// Updated code using Zustand
 export default function WaterTracker() {
-  // Zustand imported state
   const { isLogged, setIsLogged, waterMeasurement, setWaterMeasurement } = useWaterState();
+  const [inputValue, setInputValue] = useState('');
+  const [unitValue, setUnitValue] = useState('ml');
+  
+  // Ensure the component is mounted before rendering
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const [inputValue, setInputValue] = useState('') // -> empty variable
-  const [unitValue, setUnitValue] = useState('ml') // -> default value
-
-  const handle = (text: string) => { // -> taking text as parameter (type string)
-    setInputValue(text); // -> setting value as the user's input
-  };
+  if (!mounted) return null;
 
   const handleSetWaterValue = () => {
     const amount = Number(inputValue);
-    // If amount > 1 and unit == litres, stop program
-    if (amount > 1 && unitValue == 'l') {
-      Alert.alert("Exceeded limit (>1 l)")
+    if (amount > 1 && unitValue === 'l') {
+      Alert.alert("Exceeded limit (>1 l)");
+    } else {
+      setWaterMeasurement(amount, unitValue);
+      setInputValue('');
     }
+  };
 
-    else {
-      setWaterMeasurement(amount, unitValue); // -> value stored here
-      setInputValue('') // -> reset text input
-    }
-  }
-  
-  // Adding condition: if the input box is not empty AND is a numerical value (!isNan), enable "Enter" button
-  //... else, keep it hidden
   const enableEnterButton = inputValue.trim() !== "" && !isNaN(Number(inputValue));
 
-  // Using simple condtion (the if statement):
-  // If the condition is true, show the screen to input the water (UI)
-  // Else, return to the home screen
-  if (isLogged) // -> setIsLogged(true)
-  {
-    return (
-      <View style={styles.container}>
-        <TextInput
-          style={styles.textinput} 
-          placeholder="e.g., 250"
-          maxLength={4}
-          keyboardType="numeric" // -> enforce numeric value to enter
-          onChangeText={handle} // -> linking to the function (handle)
-          value={inputValue}
-        />
+  return (
+    <View style={styles.container}>
+      {isLogged ? (
+        <>
+          <TextInput
+            style={styles.textinput} 
+            placeholder="e.g., 250"
+            maxLength={4}
+            keyboardType="numeric"
+            onChangeText={setInputValue}
+            value={inputValue}
+          />
 
-        <Picker style={styles.picker} selectedValue={unitValue} onValueChange={(itemValue) => setUnitValue(itemValue)}>
-          <Picker.Item label="ml" value="ml"/>
-          <Picker.Item label="l" value="l"/>
-        </Picker>
+          <Picker 
+            style={styles.picker} 
+            selectedValue={unitValue} 
+            onValueChange={(itemValue) => setUnitValue(itemValue)}
+          >
+            <Picker.Item label="ml" value="ml"/>
+            <Picker.Item label="l" value="l"/>
+          </Picker>
 
-        {/* Condition applies here */}
-        {enableEnterButton && (
-          <TouchableOpacity
-          style={styles.button}
-          onPress={() => {handleSetWaterValue()}}
-          ><Text style={styles.buttontext}>Enter</Text></TouchableOpacity>
-        )}
+          {enableEnterButton && (
+            <Pressable style={styles.button} onPress={handleSetWaterValue}>
+              <Text style={styles.buttontext}>Enter</Text>
+            </Pressable>
+          )}
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setIsLogged(false)}
-        ><Text style={styles.buttontext}>Back</Text></TouchableOpacity>
+          <Pressable style={styles.button} onPress={() => setIsLogged(false)}>
+            <Text style={styles.buttontext}>Back</Text>
+          </Pressable>
 
-        <Text style={styles.text}>Latest Water Logged: {waterMeasurement.amount} {waterMeasurement.unit}</Text>
-      </View>
-    )
-  }
-  
-  else {    
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Water Log</Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setIsLogged(true)}
-        ><Text style={styles.buttontext}>Log</Text></TouchableOpacity>
-      </View>
-    );
-  }
+          <Text style={styles.text}>
+            Latest: {waterMeasurement.amount} {waterMeasurement.unit}
+          </Text>
+        </>
+      ) : (
+        <>
+          <Text style={styles.title}>Water Log</Text>
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              console.log("Button Clicked!");
+              setIsLogged(true);
+            }}
+          >
+            <Text style={styles.buttontext}>Log</Text>
+          </Pressable>
+        </>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -120,16 +106,17 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    //minHeight: Platform.OS === 'web' ? '100vh' : 'auto',
   },
   title: {
     fontSize: 28,
-    fontFamily: "GoogleSans",
+    fontFamily: 'GoogleSans',
   },
   textinput: {
     height: 40,
-    width: 'auto',
+    minWidth: 150,
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 5,
@@ -139,16 +126,17 @@ const styles = StyleSheet.create({
   },
   button: {
     margin: 10,
-    padding: 5,
+    padding: 15,
     width: 100,
     backgroundColor: '#4285F4',
     borderRadius: 5,
-    fontFamily: "GoogleSans",
-    textAlign: "center",
+    fontFamily: 'GoogleSans',
+    textAlign: 'center',
     color: 'white',
+    cursor: 'pointer'
   },
   buttontext: {
-    textAlign: "center",
+    textAlign: 'center',
     color: 'white'
   },
   text: {
