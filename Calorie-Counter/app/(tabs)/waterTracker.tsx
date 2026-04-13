@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Text, View, StyleSheet, TextInput, Platform, Pressable } from "react-native";
+import { Alert, Text, View, StyleSheet, TextInput, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
 // -- Safe Zustand Import --
@@ -87,10 +87,10 @@ export default function WaterTracker() {
               <View key={index} style={styles.waterBlock} />
             ))}
           </View>
-          <Text style={styles.glassLabel}>
-            {displayTotalMl}ml total ({totalBlocks} blocks)
-          </Text>
-        </View>
+            <Text style={styles.glassLabel}>
+              {displayTotalMl}ml total ({totalBlocks} blocks)
+            </Text>
+          </View>
 
           <TextInput
             style={[ styles.textinput, isExceeded && { backgroundColor: 'red' } ]} // Override default if exceeded
@@ -101,25 +101,31 @@ export default function WaterTracker() {
             value={inputValue}
           />
 
-          <Picker 
-            style={styles.picker} 
-            selectedValue={unitValue} 
-            onValueChange={(itemValue) => setUnitValue(itemValue)}
-            mode="dropdown"
-          >
-            <Picker.Item label="ml" value="ml"/>
-            <Picker.Item label="l" value="l"/>
-          </Picker>
+          <View style={styles.pickerWrapper}>
+            <Picker 
+              style={styles.picker}
+              itemStyle={styles.iosItemStyle} 
+              selectedValue={unitValue} 
+              onValueChange={(itemValue) => setUnitValue(itemValue)}
+              dropdownIconColor="black"
+              mode="dropdown"
+            >
+              <Picker.Item label="ml" value="ml" color="black" />
+              <Picker.Item label="l" value="l" color="black" />
+            </Picker>
+          </View>
 
-          {enableEnterButton && (
-            <Pressable style={styles.button} onPress={handleSetWaterValue}>
-              <Text style={styles.buttontext}>Enter</Text>
+          <View style={styles.buttonGroup}>
+            {enableEnterButton && (
+              <Pressable style={styles.button} onPress={handleSetWaterValue}>
+                <Text style={styles.buttontext}>Enter</Text>
+              </Pressable>
+            )}
+
+            <Pressable style={styles.button} onPress={() => setIsLogged(false)}>
+              <Text style={styles.buttontext}>Back</Text>
             </Pressable>
-          )}
-
-          <Pressable style={styles.button} onPress={() => setIsLogged(false)}>
-            <Text style={styles.buttontext}>Back</Text>
-          </Pressable>
+          </View>
 
           <Text style={styles.text}>
             Latest: {waterMeasurement.amount} {waterMeasurement.unit}
@@ -183,11 +189,29 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 25
   },
+  pickerWrapper: {
+    width: 150,
+    height: 50,
+    borderRadius: 5,
+    marginVertical: 10, // Adds space above and below the picker
+    zIndex: 10,         // Ensures it sits on top of other elements
+    elevation: 10,      // Required for Android z-indexing
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
   picker: {
-    width: 150,           // Explicit width is required for Android/iOS
-    height: 50,           // Standard height for mobile touch targets
-    backgroundColor: Platform.OS === 'web' ? 'transparent' : '#f0f0f0', // Light gray background for mobile
-    color: 'black',       // Ensure text isn't white
+    width: '100%',
+    height: '100%',
+    color: 'black'
+  },
+  buttonGroup: {
+    alignItems: 'center',
+    zIndex: 1,          // Keeps buttons below the picker dropdown
+  },
+  iosItemStyle: {
+    height: 50, // Height of the individual text item
+    fontSize: 18,
+    color: 'black', // Forces the text colour on iOS
   },
   glassContainer: {
     marginTop: 20,
