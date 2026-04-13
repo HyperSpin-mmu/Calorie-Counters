@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react'; //added useEffect, useState to import
 import { View, Text, StyleSheet, SectionList, TouchableOpacity, DimensionValue } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,19 +7,44 @@ import { useDiaryStore } from '../store/diaryStore';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { useAnimatedStyle, interpolate, Extrapolation } from 'react-native-reanimated';
 
-// Mock targets 
-const TARGETS = {
-  calories: 2500,
-  carbs: 300,
-  protein: 160,
-  fat: 70,
-};
+import { auth, db } from '../../firebase'; // Firebase imports
+import { doc, getDoc } from 'firebase/firestore'; // Firestore functions
+
+//Targets loaded from Firestore on mount 
+const INITIAL_TARGETS = { calories: 0, carbs: 0, protein: 0, fat: 0 };
 
 export default function FoodDiaryScreen() {
   const router = useRouter();
   
   const entries = useDiaryStore((state: any) => state.entries);
   const removeEntry = useDiaryStore((state: any) => state.removeEntry);
+
+  // State to hold targets loaded from Firestore
+  const [TARGETS, setTARGETS] = useState(INITIAL_TARGETS);
+
+  //Load user's macro goals from Firestore on mount
+  useEffect(() => {
+    const loadTargets = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const ref = doc(db, 'users', user.uid);
+      const snap = await getDoc(ref);
+
+      if (snap.exists()) {
+        const data = snap.data();
+        setTARGETS({
+          calories: Number(data.calorieGoal) || 0,
+          carbs:    Number(data.carbGoal)    || 0,
+          protein:  Number(data.proteinGoal) || 0,
+          fat:      Number(data.fatGoal)     || 0,
+        });
+      }
+    };
+
+    loadTargets();
+  }, []);
+  
 
   const dailyTotals = useMemo(() => {
     return entries.reduce(
