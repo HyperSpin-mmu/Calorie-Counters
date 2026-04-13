@@ -6,6 +6,7 @@ import { Picker } from "@react-native-picker/picker";
 // Import directly from the 'vanilla' and 'react' entry points 
 // to avoid the middleware that usually causes the import.meta error.
 import { create } from 'zustand';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface WaterState {
   isLogged: boolean;
@@ -29,8 +30,19 @@ export default function WaterTracker() {
   
   // Ensure the component is mounted before rendering
   const [mounted, setMounted] = useState(false);
+  
+  // Manual Persist using the useEffect
   useEffect(() => {
-    setMounted(true);
+    const loadData = async () => {
+      const saved = await AsyncStorage.getItem('water-tracker-manual');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setWaterMeasurement(parsed.amount, parsed.unit);
+      }
+      setMounted(true);
+    };
+
+    loadData(); // Function to load and save user water data 
   }, []);
 
   if (!mounted) return null;
