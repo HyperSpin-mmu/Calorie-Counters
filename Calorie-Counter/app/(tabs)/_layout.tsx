@@ -2,13 +2,13 @@ import { Tabs } from 'expo-router';
 import { useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 //This is the button in the middle of the tab bar, it is used to navigate to the barcode scanner screen.
-const BarButton = ({ children, onPress }: { children: any, onPress: any }) => (
+const BarButton = ({ onPress }: { onPress: any }) => (
   <TouchableOpacity
     style={{
       top: -20,
@@ -94,8 +94,8 @@ export default function RootLayout() {
         name="action"
         options={{
           tabBarLabel: () => null,
-          tabBarButton: (props) => (
-             <BarButton onPress={handleButtonPress} children={undefined} />
+          tabBarButton: () => (
+             <BarButton onPress={handleButtonPress} />
           ),
           tabBarStyle: {display: 'none' },
         }}

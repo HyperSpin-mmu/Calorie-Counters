@@ -1,44 +1,75 @@
-import { Stack } from 'expo-router';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useAuthStore } from './store/authStore';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-// This file handles the transition between the tab navigator and pages that are not in the tab navigator.
+// firebase imports
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
+import { useDiaryStore } from './store/diaryStore';
+
 export default function RootLayout() {
-
-  // EXPO router for navigation between screens. (https://docs.expo.dev/router/introduction/)
   const router = useRouter();
+  const setUid = useAuthStore((state) => state.setUid);
 
-  // Load custom fonts and keep the splash screen visible until the fonts are loaded.
+  // Load custom fonts
   const [loaded, error] = useFonts({
     'GoogleSans': require("../assets/fonts/GoogleSans-Regular.ttf"),
   });
 
-  // Hide the splash screen once the fonts are loaded or if there is an error.
+  // Firebase auth listener – runs once the app starts, checks if the user is logged in or out
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User listener for zustand and authStore
+        useDiaryStore.persist.setOptions({ name: `diary-${user.uid}` }); // Set the storage key to the user's UID for diary persistence
+        useDiaryStore.persist.rehydrate(); // Rehydrate diary store with persisted data 
+        router.replace("/(tabs)");
+      } else {
+        // Not logged in then go to login and reset zustand
+        useDiaryStore.getState().clearDiary();
+        setUid(null); // Clear UID in authStore when user logs out
+        router.replace("/onboarding/splash"); // Redirect to splash screen if not logged in
+      }
+    });
+
+    return unsub;
+  }, []);
+
+  // Hide splash screen when fonts load
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
 
-  // Handles switching between the tab navigator and pages that do not belong to the navigator. (e.g. the food proportion input screen)
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-        
-        {/* The main tab navigator screen, it is the default screen when the app is opened. */}
-        <Stack.Screen name="(tabs)" /> 
-        
-        {/* Food amount screen animations and options */}
+    // <-- Wrapped the Stack in GestureHandlerRootView with flex: 1
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }}>
+        {/* Main tab navigator */}
+        <Stack.Screen name="(tabs)" />
+
+        {/* Food amount screen */}
         <Stack.Screen 
-            name="foodAmount" 
-            options={{ 
-                headerShown: false, 
-                animation : 'slide_from_right',
-            }} 
+          name="foodAmount"
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
+          }}
         />
-    </Stack>
+
+        {/* Login screen */}
+        <Stack.Screen 
+          name="login"
+          options={{
+            headerShown: false,
+            animation: 'fade',
+          }}
+        />
+      </Stack>
+    </GestureHandlerRootView>
   );
 }
