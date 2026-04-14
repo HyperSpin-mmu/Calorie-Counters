@@ -16,13 +16,6 @@ export default function WaterTracker() {
     addWater(ml);
   };
 
-  const handleCustomAdd = () => {
-    const ml = parseInt(customAmount);
-    if (!ml || ml <= 0) return;
-    addWater(ml);
-    setCustomAmount('');
-  };
-
   const progress = Math.min(totalMl / dailyGoalMl, 1);
 
   return (
