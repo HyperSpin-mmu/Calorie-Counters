@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from 'expo-router';
 import { useDiaryStore } from '../store/diaryStore';
 import { useWaterStore } from "../store/waterStore";
+import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 
 
 export default function Index() {
@@ -73,7 +74,8 @@ export default function Index() {
 return (
     <ScrollView style={styles.content} contentInsetAdjustmentBehavior="automatic">
       <View style={{ padding: 20 }}>
-        <Text style={styles.title}>Welcome back!</Text>
+        <Text style={styles.title}>Welcome back,</Text>
+        <Text style={[styles.subtitle]}>Here's your summary for today.</Text>
 
         {/* Card 1 - Calories & Macros */}
         <View style={styles.card}>
@@ -160,7 +162,8 @@ return (
             style={styles.waterButton}
             onPress={() => router.navigate('/waterTracker')}
           >
-            <Text style={styles.waterButtonText}>+ Add Water</Text>
+            <MaterialIcons name="water-drop" size={18} color="#fff" />
+            <Text style={styles.waterButtonText}>Add Water</Text>
           </TouchableOpacity>
 
         </View>
@@ -173,32 +176,50 @@ return (
 
 // Styles for the main page UI
 const styles = StyleSheet.create({
-  waterButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   waterButton: {
-    backgroundColor: '#56b1d4',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
+      backgroundColor: '#56b1d4',
+      paddingVertical: 14,
+      paddingHorizontal: 20,
+      borderRadius: 30,
+      alignItems: 'center',
+      marginTop: 10,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: 8,
+  },
+  waterButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: 'bold',
+      letterSpacing: 0.5,
   },
   title: {
-    fontSize: 28,
-    fontFamily: "GoogleSans",
-    textAlign: "center",
+    fontSize: 32,
+    fontFamily: "GoogleSans-Bold",
+    fontWeight: "bold",
+    color: "#333",
+    marginTop: 10,
+    marginLeft: 5,
+    textAlign: 'left',
+  },
+  subtitle: {
+    fontSize: 18,
+    fontFamily: "GoogleSans-Regular",
+    marginTop: 5,
+    marginLeft: 5,
+    marginBottom: 20,
+    color: "#666",
+    textAlign: 'left',
   },
   calorieNumber: {
     fontSize: 24,
-    fontFamily: "GoogleSans",
+    fontFamily: "GoogleSans-Bold",
     fontWeight: "bold",
     color: "#007AFF",
   },
   calorieText: {
     fontSize: 16,
-    fontFamily: "GoogleSans",
+    fontFamily: "GoogleSans-Bold",
     color: "#333",
   },
   card: {
@@ -219,7 +240,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontFamily: "GoogleSans",
+    fontFamily: "GoogleSans-Bold",
     fontWeight: 'bold',
     color: '#333',
     alignSelf: 'flex-start',
