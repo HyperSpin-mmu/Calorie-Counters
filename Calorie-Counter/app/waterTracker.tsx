@@ -10,7 +10,6 @@ const QUICK_ADD = [150, 250, 330, 500];
 export default function WaterTracker() {
   const router = useRouter();
   const { totalMl, dailyGoalMl, addWater } = useWaterStore();
-  const [customAmount, setCustomAmount] = useState('');
 
   const handleQuickAdd = (ml: number) => {
     addWater(ml);
