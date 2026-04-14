@@ -141,6 +141,23 @@ return (
         </View>
         {/* End Card 1 */}
 
+        {/* Card 3 - Saved Meals */}
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>Saved Meals</Text>
+
+          <Text style={styles.cardTitle}>
+            Quickly log meals you've saved for easy access.
+          </Text>
+
+          <TouchableOpacity 
+            style={styles.savedButton}
+            onPress={() => router.navigate('/saved')}
+          >
+            <MaterialIcons name="bookmark" size={18} color="#fff" />
+            <Text style={styles.savedButtonText}>View Saved Meals</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Card 2 - Water */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Today's Water</Text>
@@ -168,6 +185,8 @@ return (
 
         </View>
         {/* End Card 2 */}
+
+
 
       </View>
     </ScrollView>
@@ -282,4 +301,22 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 3,
   },
+  savedButton: {
+    backgroundColor: '#1976D2',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    alignItems: 'center',
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  savedButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+
 });
