@@ -15,7 +15,7 @@ export default function foodAmountScreen() {
 
   // Get the scanned data from the navigation parameters passed from the barcode scanner screen. 
   const addEntry = useDiaryStore((state: any) => state.addEntry);
-  const { scannedData } = useLocalSearchParams();
+  const { scannedData, manualProduct } = useLocalSearchParams();
   const router = useRouter();
 
   // Set up state for the amount, unit, and meal type inputs, as well as the food data and loading status.
@@ -68,30 +68,52 @@ export default function foodAmountScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch the food data based on the scanned barcode when the component mounts or when the scanned data changes.
-  useEffect(() => {
-    async function loadFoodData() {
-      if (scannedData && typeof scannedData === "string") {
-        setIsLoading(true);
+  // NOTE (Redwane – 2026-04):
+// Added support for products coming from the Search screen / manual entry.
+// If a manualProduct is passed through navigation params, we parse it and
+// set the food data directly instead of calling the barcode API.
+
+useEffect(() => {
+  async function loadFoodData() {
+
+    // NEW: Handle product coming from Search or manual entry
+    if (manualProduct && typeof manualProduct === "string") {
+      try {
+        const parsedProduct = JSON.parse(manualProduct);
+        setFoodData(parsedProduct);
+      } catch (error) {
+        console.error("Error parsing manual product:", error);
+        setFoodData(null);
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
+   
+    if (scannedData && typeof scannedData === "string") {
+      setIsLoading(true);
 
       try {
-        // Fetch the food data using the scanned barcode and update the state with the fetched data.
         const result = await fetchFoodData(scannedData as string);
         setFoodData(result);
       } catch (error) {
-          console.error("Error loading food data:", error);
-          setFoodData(null);
-        } finally {
-          setIsLoading(false);
-        }
-    } else if (scannedData) {
-        console.warn("Scanned data is not a string:", scannedData);
+        console.error("Error loading food data:", error);
         setFoodData(null);
+      } finally {
         setIsLoading(false);
       }
+
+    } else if (scannedData) {
+      console.warn("Scanned data is not a string:", scannedData);
+      setFoodData(null);
+      setIsLoading(false);
+    }
   }
-  // Call the function to load the food data.
-    loadFoodData();
-  }, [scannedData]);
+
+  loadFoodData();
+
+}, [scannedData, manualProduct]);
 
   // Function to calculate the adjusted macro values based on the entered amount and selected unit.
   const calculateMacro = (baseValue: any) => {
