@@ -48,10 +48,6 @@ export default function BarcodeScanner() {
       </View>
     );
   }
-
-  const totalMl = useWaterStore((state) => state.totalMl);
-  const dailyGoalMl = useWaterStore((state) => state.dailyGoalMl);
-
   // If the permission is granted, we render the camera view and set up the barcode scanning handler.
   return (
     <View style={styles.container}>
