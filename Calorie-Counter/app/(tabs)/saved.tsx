@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useMealStore, Meal } from '@/store/mealStore';
+import { useMealStore, Meal } from '../store/mealStore';
 
 export default function SavedMealsScreen() {
 
