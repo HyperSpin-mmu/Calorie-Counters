@@ -9,7 +9,8 @@ import { useMealStore, Meal } from '@/store/mealStore';
 
 export default function SavedMealsScreen() {
 
-  const { savedMeals, addMeal, updateMeal, deleteMeal, logMeal, loadFromStorage } = useMealStore();
+  const savedMeals = useMealStore(state => state.savedMeals);
+  const { addMeal, updateMeal, deleteMeal, logMeal, loadFromStorage } = useMealStore();
 
   useEffect(() => { loadFromStorage(); }, []);
 

@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
+import { Platform } from 'react-native';
 
 // ─── Configure how notifications appear when the app is open ─────────────────
 Notifications.setNotificationHandler({
@@ -62,9 +63,13 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
       const saved = json ? JSON.parse(json) : DEFAULT_SETTINGS;
       set({ settings: saved });
 
-      // Check current permission status
-      const { status } = await Notifications.getPermissionsAsync();
-      set({ hasPermission: status === 'granted' });
+      // Check current permission status (web always treated as granted)
+      if (Platform.OS === 'web') {
+        set({ hasPermission: true });
+      } else {
+        const { status } = await Notifications.getPermissionsAsync();
+        set({ hasPermission: status === 'granted' });
+      }
     } catch (e) {
       console.error('Failed to load notification settings:', e);
     }
@@ -72,6 +77,12 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
 
   // ── Request notification permission from the OS ────────────────────────────
   requestPermission: async () => {
+    // expo-notifications does not support web — treat as always granted so
+    // toggle state can still be tested in a browser.
+    if (Platform.OS === 'web') {
+      set({ hasPermission: true });
+      return true;
+    }
     const { status } = await Notifications.requestPermissionsAsync();
     const granted = status === 'granted';
     set({ hasPermission: granted });
@@ -95,6 +106,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   scheduleAll: async () => {
     const { settings, hasPermission } = get();
     if (!hasPermission) return;
+    if (Platform.OS === 'web') return; // scheduling not supported on web
 
     // Cancel existing ones first to avoid duplicates
     await Notifications.cancelAllScheduledNotificationsAsync();
