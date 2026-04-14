@@ -75,17 +75,13 @@ export default function SearchScreen() {
         const data = await response.json();
 
         const term = debouncedSearch.toLowerCase().trim();
-        // FIX 1: Split into words and require ALL words to appear somewhere in
-        // the product name — instead of requiring the full phrase verbatim.
-        // This matches how OpenFoodFacts actually indexes products.
+        // Split into words and require ALL words to appear somewhere in the product name
         const words = term.split(/\s+/).filter(Boolean);
 
         const filtered = (data.products || []).filter((p: Product) => {
           const name = p.product_name?.toLowerCase() || "";
-          // Every search word must appear somewhere in the name
           return words.every((word) => name.includes(word));
         })
-          // Sort: exact matches first, then starts-with, then contains
           .sort((a: Product, b: Product) => {
             const an = a.product_name?.toLowerCase() ?? "";
             const bn = b.product_name?.toLowerCase() ?? "";
@@ -159,99 +155,111 @@ export default function SearchScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Search Food</Text>
-      </View>
-
-      {/* Search Bar + Add Button */}
-      <View style={styles.searchRow}>
-        <View style={styles.searchBox}>
-          <MaterialIcons name="search" size={20} color="#999" style={{ marginRight: 8 }} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search food (min 3 letters)..."
-            placeholderTextColor="#aaa"
-            value={search}
-            onChangeText={setSearch}
-            returnKeyType="search"
-            autoCorrect={false}
-          />
-          {loading ? (
-            <ActivityIndicator size="small" color="#007AFF" style={{ marginLeft: 8 }} />
-          ) : search.length > 0 ? (
-            <TouchableOpacity onPress={() => { setSearch(""); setProducts([]); }}>
-              <MaterialIcons name="close" size={18} color="#aaa" />
-            </TouchableOpacity>
-          ) : null}
+      <SafeAreaView edges={["top"]} style={{ backgroundColor: '#fff' }}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton} 
+            onPress={() => router.navigate('/')}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="black" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Search Food</Text>
         </View>
-        <TouchableOpacity style={styles.addBtn} onPress={() => setShowManualModal(true)}>
-          <MaterialIcons name="add" size={24} color="#fff" />
-        </TouchableOpacity>
-      </View>
+      </SafeAreaView>
 
-      {/* Results */}
-      <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
-        <FlatList
-          data={products}
-          keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={styles.list}
-          keyboardShouldPersistTaps="handled"
-          renderItem={({ item }) => {
-            const kcal = Math.round(item.nutriments?.["energy-kcal_100g"] ?? 0);
-            const carbs = item.nutriments?.carbohydrates_100g ?? 0;
-            const protein = item.nutriments?.proteins_100g ?? 0;
-            const fat = item.nutriments?.fat_100g ?? 0;
-            return (
-              <Pressable
-                style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-                onPress={() => handleProductPress(item)}
-              >
-                <View style={styles.cardTop}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.cardName} numberOfLines={1}>
-                      {item.product_name}
-                    </Text>
-                    <Text style={styles.cardBrand} numberOfLines={1}>
-                      {item.brands || "Unknown brand"}
-                    </Text>
-                  </View>
-                  <View style={styles.kcalBadge}>
-                    <Text style={styles.kcalValue}>{kcal}</Text>
-                    <Text style={styles.kcalLabel}>kcal</Text>
-                  </View>
-                </View>
-                <View style={styles.macroRow}>
-                  <MacroBadge value={carbs} label="Carbs" color="#E3F2FD" />
-                  <MacroBadge value={protein} label="Protein" color="#E8F5E9" />
-                  <MacroBadge value={fat} label="Fat" color="#FFF3E0" />
-                  <Text style={styles.perNote}>per 100g</Text>
-                </View>
-              </Pressable>
-            );
-          }}
-          ListEmptyComponent={
-            !loading && debouncedSearch.length >= 3 ? (
-              <View style={styles.emptyState}>
-                <MaterialIcons name="search-off" size={48} color="#ccc" />
-                <Text style={styles.emptyText}>No results found</Text>
-                <TouchableOpacity
-                  style={styles.manualFallbackBtn}
-                  onPress={() => setShowManualModal(true)}
+      <View style={styles.container}>
+        {/* Search Bar + Add Button */}
+        <View style={styles.searchRow}>
+          <View style={styles.searchBox}>
+            <MaterialIcons name="search" size={20} color="#999" style={{ marginRight: 8 }} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search food (min 3 letters)..."
+              placeholderTextColor="#aaa"
+              value={search}
+              onChangeText={setSearch}
+              returnKeyType="search"
+              autoCorrect={false}
+            />
+            {loading ? (
+              <ActivityIndicator size="small" color="#007AFF" style={{ marginLeft: 8 }} />
+            ) : search.length > 0 ? (
+              <TouchableOpacity onPress={() => { setSearch(""); setProducts([]); }}>
+                <MaterialIcons name="close" size={18} color="#aaa" />
+              </TouchableOpacity>
+            ) : null}
+          </View>
+          <TouchableOpacity style={styles.addBtn} onPress={() => setShowManualModal(true)}>
+            <MaterialIcons name="add" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Results */}
+        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+          <FlatList
+            data={products}
+            keyExtractor={(_, index) => index.toString()}
+            contentContainerStyle={styles.list}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            renderItem={({ item }) => {
+              const kcal = Math.round(item.nutriments?.["energy-kcal_100g"] ?? 0);
+              const carbs = item.nutriments?.carbohydrates_100g ?? 0;
+              const protein = item.nutriments?.proteins_100g ?? 0;
+              const fat = item.nutriments?.fat_100g ?? 0;
+              return (
+                <Pressable
+                  style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+                  onPress={() => handleProductPress(item)}
                 >
-                  <Text style={styles.manualFallbackText}>Add manually instead</Text>
-                </TouchableOpacity>
-              </View>
-            ) : !loading && debouncedSearch.length === 0 ? (
-              <View style={styles.emptyState}>
-                <MaterialIcons name="restaurant" size={48} color="#ccc" />
-                <Text style={styles.emptyText}>Search for a food to get started</Text>
-              </View>
-            ) : null
-          }
-        />
-      </Animated.View>
+                  <View style={styles.cardTop}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.cardName} numberOfLines={1}>
+                        {item.product_name}
+                      </Text>
+                      <Text style={styles.cardBrand} numberOfLines={1}>
+                        {item.brands || "Unknown brand"}
+                      </Text>
+                    </View>
+                    <View style={styles.kcalBadge}>
+                      <Text style={styles.kcalValue}>{kcal}</Text>
+                      <Text style={styles.kcalLabel}>kcal</Text>
+                    </View>
+                  </View>
+                  <View style={styles.macroRow}>
+                    <MacroBadge value={carbs} label="Carbs" color="#E3F2FD" />
+                    <MacroBadge value={protein} label="Protein" color="#E8F5E9" />
+                    <MacroBadge value={fat} label="Fat" color="#FFF3E0" />
+                    <Text style={styles.perNote}>per 100g</Text>
+                  </View>
+                </Pressable>
+              );
+            }}
+            ListEmptyComponent={
+              !loading && debouncedSearch.length >= 3 ? (
+                <View style={styles.emptyState}>
+                  <MaterialIcons name="search-off" size={48} color="#ccc" />
+                  <Text style={styles.emptyText}>No results found</Text>
+                  <TouchableOpacity
+                    style={styles.manualFallbackBtn}
+                    onPress={() => setShowManualModal(true)}
+                  >
+                    <Text style={styles.manualFallbackText}>Add manually instead</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : !loading && debouncedSearch.length === 0 ? (
+                <View style={styles.emptyState}>
+                  <MaterialIcons name="restaurant" size={48} color="#ccc" />
+                  <Text style={styles.emptyText}>Search for a food to get started</Text>
+                </View>
+              ) : null
+            }
+          />
+        </Animated.View>
+      </View>
 
       {/* Manual Add Modal */}
       <Modal visible={showManualModal} animationType="slide" transparent>
@@ -267,12 +275,10 @@ export default function SearchScreen() {
                 <MaterialIcons name="close" size={24} color="#666" />
               </TouchableOpacity>
             </View>
-            {/* FIX 2: Use "always" so taps inside the modal never dismiss the
-                keyboard, which was causing TextInput fields to lose focus
-                immediately after being tapped on Android. */}
             <ScrollView
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="always"
+              keyboardDismissMode="on-drag"
             >
               {[
                 { key: "name", label: "Product Name *", placeholder: "e.g. Greek Yogurt", keyboard: "default" },
@@ -293,7 +299,6 @@ export default function SearchScreen() {
                     onChangeText={(val) =>
                       setManual((prev) => ({ ...prev, [key]: val }))
                     }
-                    // Prevent the field from losing focus when the modal shifts
                     blurOnSubmit={false}
                   />
                 </View>
@@ -312,7 +317,7 @@ export default function SearchScreen() {
           </View>
         </KeyboardAvoidingView>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -320,14 +325,17 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F5F5F5" },
 
   header: {
+    height: 50,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: "#e0e0e0",
+  },
+  backButton: {
+    position: 'absolute',
+    left: 15,
   },
   headerTitle: { fontSize: 18, fontWeight: "600", color: "#111" },
 
