@@ -1,6 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
-import { useEffect } from 'react';
+import { use, useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { useAuthStore } from './store/authStore';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { useDiaryStore } from './store/diaryStore';
+import { useWaterStore } from './store/waterStore';
 
 export default function RootLayout() {
   const router = useRouter();
@@ -25,11 +26,16 @@ export default function RootLayout() {
       if (user) {
         // User listener for zustand and authStore
         useDiaryStore.persist.setOptions({ name: `diary-${user.uid}` }); // Set the storage key to the user's UID for diary persistence
-        useDiaryStore.persist.rehydrate(); // Rehydrate diary store with persisted data 
+        useDiaryStore.persist.rehydrate();
+        
+        useWaterStore.persist.setOptions({ name : `water-${user.uid}` })// Set the storage key to the user's UID for water persistence
+        useWaterStore.persist.rehydrate();
         router.replace("/(tabs)");
+
       } else {
         // Not logged in then go to login and reset zustand
         useDiaryStore.getState().clearDiary();
+        useWaterStore.getState().resetWater();
         setUid(null); // Clear UID in authStore when user logs out
         router.replace("/onboarding/splash"); // Redirect to splash screen if not logged in
       }
@@ -67,6 +73,14 @@ export default function RootLayout() {
           options={{
             headerShown: false,
             animation: 'fade',
+          }}
+        />
+
+        <Stack.Screen
+          name="waterTracker"
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
           }}
         />
       </Stack>

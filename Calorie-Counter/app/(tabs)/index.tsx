@@ -1,126 +1,264 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ScrollView, DimensionValue, TouchableOpacity } from "react-native";
+import Svg, { Circle } from "react-native-svg";
 import { auth, db } from "../../firebase"; // import Firestore
 import { doc, getDoc } from "firebase/firestore"; // Firestore functions
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from 'expo-router';
+import { useDiaryStore } from '../store/diaryStore';
+import { useWaterStore } from "../store/waterStore";
 
-// This is the main page of the app. It loads after onboarding + BMI flow.
-// It receives all user data passed through navigation.
+
 export default function Index() {
-  const user = auth.currentUser; // Get the currently logged-in user
 
-  //local state to store the user's Firestore profile
-  const [profile, setProfile] = useState<any>(null);
+  const user = auth.currentUser;
 
-  //Load user profile from Firestore using their UID
-  useEffect(() => {
-    const loadProfile = async () => {
-      if (!user) return; // safety check
+  const INITIAL_TARGETS = { calories: 0, carbs: 0, protein: 0, fat: 0 };
+  const [TARGETS, setTARGETS] = useState(INITIAL_TARGETS);
+    
+  const entries = useDiaryStore((state: any) => state.entries);
+  const router = useRouter();
 
-      // Reference the user's document in Firestore
-      const ref = doc(db, "users", user.uid);
+  const totalMl = useWaterStore((state) => state.totalMl);
+  const dailyGoalMl = useWaterStore((state) => state.dailyGoalMl);
 
-      // Fetch the document
-      const snap = await getDoc(ref);
+  const size = 160;
+  const strokeWidth = 12;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
 
-      // If the document exists, store the data in state
-      if (snap.exists()) {
-        setProfile(snap.data());
-      }
-    };
+    //Load user's macro goals from Firestore on mount
+    useEffect(() => {
+      const loadTargets = async () => {
+        const user = auth.currentUser;
+        if (!user) return;
+  
+        const ref = doc(db, 'users', user.uid);
+        const snap = await getDoc(ref);
+  
+        if (snap.exists()) {
+          const data = snap.data();
+          setTARGETS({
+            calories: Number(data.calorieGoal) || 0,
+            carbs:    Number(data.carbGoal)    || 0,
+            protein:  Number(data.proteinGoal) || 0,
+            fat:      Number(data.fatGoal)     || 0,
+          });
+        }
+      };
+  
+      loadTargets();
+    }, []);
+  
+  const dailyTotals = useMemo(() => {
+    return entries.reduce(
+      (totals: any, entry: any) => ({
+        calories: totals.calories + Number(entry.macros?.calories || 0),
+        carbs: totals.carbs + Number(entry.macros?.carbs || 0),
+        protein: totals.protein + Number(entry.macros?.protein || 0),
+        fat: totals.fat + Number(entry.macros?.fat || 0),
+      }),
+      { calories: 0, carbs: 0, protein: 0, fat: 0 }
+    );
+  }, [entries]);
 
-    loadProfile(); // call the async function
-  }, [user]); // re-run if user changes
+  const getProgress = (current: number, target: number): DimensionValue => {
+    if (target === 0) return '0%';
+    const percentage = (current / target) * 100;
+    return `${Math.min(percentage, 100)}%` as DimensionValue; 
+  };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Main page</Text>
+  const progress = TARGETS.calories > 0 ? dailyTotals.calories / TARGETS.calories : 0;
+  const offset = circumference * (1 - progress);
 
-      {/* Display logged-in user's email */}
-      {user?.email && (
-        <Text style={styles.email}>{user.email}</Text>
-      )}
+return (
+    <ScrollView style={styles.content} contentInsetAdjustmentBehavior="automatic">
+      <View style={{ padding: 20 }}>
+        <Text style={styles.title}>Welcome back!</Text>
 
-      {/* Display motivation */}
-      {profile?.motivation && (
-        <Text style={styles.info}>Motivation: {profile.motivation}</Text>
-      )}
+        {/* Card 1 - Calories & Macros */}
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>Today's Calories</Text>
 
-      {/* Display activity level */}
-      {profile?.activity && (
-        <Text style={styles.info}>Activity Level: {profile.activity}</Text>
-      )}
+          {/* Calorie Ring */}
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <Svg width={size} height={size}>
+              <Circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius}
+                stroke="#F0F0F5"
+                strokeWidth={strokeWidth}
+                fill="none"
+              />
+              <Circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius}
+                stroke="#007AFF"
+                strokeWidth={strokeWidth}
+                fill="none"
+                strokeDasharray={circumference}
+                strokeDashoffset={offset}
+                strokeLinecap="round"
+                transform={`rotate(-90, ${size / 2}, ${size / 2})`}
+              />
+            </Svg>
+            <View style={{ position: 'absolute', alignItems: 'center' }}>
+              <Text style={styles.calorieNumber}>
+                {Math.max(0, TARGETS.calories - dailyTotals.calories)}
+              </Text>
+              <Text style={styles.calorieText}>Remaining</Text>
+            </View>
+          </View>
 
-      {/* Display height */}
-      {profile?.height && (
-        <Text style={styles.info}>Height: {profile.height} cm</Text>
-      )}
+          {/* Macro Bars */}
+          <View style={[styles.macroRow, { marginTop: 20 }]}>
+            <View style={styles.macroColumn}>
+              <Text style={styles.cardTitle}>Carbs</Text>
+              <Text style={styles.macroValueText}>{dailyTotals.carbs}g <Text style={styles.targetSubText}>/ {TARGETS.carbs}</Text></Text>
+              <View style={styles.progressBarBg}>
+                <View style={[styles.progressBarFill, { width: getProgress(dailyTotals.carbs, TARGETS.carbs), backgroundColor: '#4CAF50' }]} />
+              </View>
+            </View>
+            <View style={[styles.macroColumn, { paddingHorizontal: 10 }]}>
+              <Text style={styles.cardTitle}>Fat</Text>
+              <Text style={styles.macroValueText}>{dailyTotals.fat}g <Text style={styles.targetSubText}>/ {TARGETS.fat}</Text></Text>
+              <View style={styles.progressBarBg}>
+                <View style={[styles.progressBarFill, { width: getProgress(dailyTotals.fat, TARGETS.fat), backgroundColor: '#FF9800' }]} />
+              </View>
+            </View>
+            <View style={styles.macroColumn}>
+              <Text style={styles.cardTitle}>Protein</Text>
+              <Text style={styles.macroValueText}>{dailyTotals.protein}g <Text style={styles.targetSubText}>/ {TARGETS.protein}</Text></Text>
+              <View style={styles.progressBarBg}>
+                <View style={[styles.progressBarFill, { width: getProgress(dailyTotals.protein, TARGETS.protein), backgroundColor: '#2196F3' }]} />
+              </View>
+            </View>
+          </View>
 
-      {/* Display weight */}
-      {profile?.weight && (
-        <Text style={styles.info}>Weight: {profile.weight} kg</Text>
-      )}
+        </View>
+        {/* End Card 1 */}
 
-      {/* Display age */}
-      {profile?.age && (
-        <Text style={styles.info}>Age: {profile.age}</Text>
-      )}
+        {/* Card 2 - Water */}
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>Today's Water</Text>
 
-      {/* Display sex */}
-      {profile?.sex && (
-        <Text style={styles.info}>Sex: {profile.sex}</Text>
-      )}
+          <View style={{ width: '100%', marginBottom: 15 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+              <Text style={styles.cardTitle}>Daily Goal</Text>
+              <Text style={styles.cardTitle}>{totalMl} / {dailyGoalMl} ml</Text>
+            </View>
+            <View style={styles.progressBarBg}>
+              <View style={[styles.progressBarFill, { 
+                width: getProgress(totalMl, dailyGoalMl), 
+                backgroundColor: '#56b1d4' 
+              }]} />
+            </View>
+          </View>
 
-      {/* Display BMI */}
-      {profile?.bmi && (
-        <Text style={styles.info}>BMI: {profile.bmi}</Text>
-      )}
+          <TouchableOpacity 
+            style={styles.waterButton}
+            onPress={() => router.navigate('/waterTracker')}
+          >
+            <Text style={styles.waterButtonText}>+ Add Water</Text>
+          </TouchableOpacity>
 
-      {/* Display calorie goal */}
-      {profile?.calorieGoal && (
-        <Text style={styles.info}>Calorie Goal: {profile.calorieGoal} kcal</Text>
-      )}
+        </View>
+        {/* End Card 2 */}
 
-      {/* Display protein goal */}
-      {profile?.proteinGoal && (
-        <Text style={styles.info}>Protein Goal: {profile.proteinGoal} g</Text>
-      )}
-
-      {/* Display fat goal */}
-      {profile?.fatGoal && (
-        <Text style={styles.info}>Fat Goal: {profile.fatGoal} g</Text>
-      )}
-
-      {/* Display carb goal */}
-      {profile?.carbGoal && (
-        <Text style={styles.info}>Carb Goal: {profile.carbGoal} g</Text>
-      )}
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
 // Styles for the main page UI
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    fontSize: 24,
-    justifyContent: "center",
-    alignItems: "center",
-    fontFamily: "GoogleSans",
+  waterButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  waterButton: {
+    backgroundColor: '#56b1d4',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
   },
   title: {
     fontSize: 28,
     fontFamily: "GoogleSans",
     textAlign: "center",
   },
-  email: {
-    fontSize: 20,
-    color: "gray",
-    marginTop: 10,
+  calorieNumber: {
+    fontSize: 24,
     fontFamily: "GoogleSans",
+    fontWeight: "bold",
+    color: "#007AFF",
   },
-  info: {
-    fontSize: 20,
-    marginTop: 10,
+  calorieText: {
+    fontSize: 16,
     fontFamily: "GoogleSans",
+    color: "#333",
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+    marginBottom: 20,
+  },
+  content: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: "GoogleSans",
+    fontWeight: 'bold',
+    color: '#333',
+    alignSelf: 'flex-start',
+    marginBottom: 15,
+  },
+  macroRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  macroColumn: {
+    flex: 1,
+  },
+  cardTitle: {
+    fontSize: 16,
+    color: '#666',
+    fontWeight: '500',
+    marginBottom: 5,
+  },
+  macroValueText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  targetSubText: {
+    fontSize: 12,
+    color: '#888',
+    fontWeight: 'normal',
+  },
+  progressBarBg: {
+    height: 6,
+    backgroundColor: '#F0F0F5',
+    borderRadius: 3,
+    width: '100%',
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 3,
   },
 });

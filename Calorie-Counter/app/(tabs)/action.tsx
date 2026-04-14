@@ -5,6 +5,7 @@ import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useWaterStore } from '../store/waterStore';
 
 export default function BarcodeScanner() {
 
@@ -47,6 +48,9 @@ export default function BarcodeScanner() {
       </View>
     );
   }
+
+  const totalMl = useWaterStore((state) => state.totalMl);
+  const dailyGoalMl = useWaterStore((state) => state.dailyGoalMl);
 
   // If the permission is granted, we render the camera view and set up the barcode scanning handler.
   return (
