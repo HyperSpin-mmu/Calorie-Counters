@@ -6,11 +6,17 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useMealStore, Meal } from '../store/mealStore';
+import { useDiaryStore } from '../store/diaryStore';
+
+
 
 export default function SavedMealsScreen() {
 
   const savedMeals = useMealStore(state => state.savedMeals);
   const { addMeal, updateMeal, deleteMeal, logMeal, loadFromStorage } = useMealStore();
+
+  const logSavedMeal = useDiaryStore((state) => state.logSavedMeal);
+
 
   useEffect(() => { loadFromStorage(); }, []);
 
@@ -76,10 +82,11 @@ export default function SavedMealsScreen() {
     }
   };
 
-  const handleLog = async (meal: Meal) => {
-    await logMeal(meal);
-    showToast(`${meal.name} (${meal.calories} kcal) added to today's total.`);
+  const handleLog = (meal: Meal) => {
+    logSavedMeal(meal, "Lunch"); 
+    showToast(`${meal.name} (${meal.calories} kcal) added to today's diary.`);
   };
+
 
   const renderMeal = ({ item }: { item: Meal }) => (
     <View style={styles.card}>
