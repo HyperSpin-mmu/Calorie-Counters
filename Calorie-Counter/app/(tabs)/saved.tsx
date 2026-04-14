@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
-  FlatList, Modal, StyleSheet, Alert, KeyboardAvoidingView, Platform,
+  FlatList, Modal, StyleSheet, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -19,6 +19,8 @@ export default function SavedMealsScreen() {
   const [formName,     setFormName]     = useState('');
   const [formCalories, setFormCalories] = useState('');
   const [formServing,  setFormServing]  = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<Meal | null>(null);
+  const [toastMsg,     setToastMsg]     = useState<string | null>(null);
 
   const openAddModal = () => {
     setEditingMeal(null);
@@ -38,12 +40,12 @@ export default function SavedMealsScreen() {
 
   const handleSave = async () => {
     if (!formName.trim()) {
-      Alert.alert('Missing name', 'Please enter a meal name.');
+      showToast('Please enter a meal name.');
       return;
     }
     const calories = parseInt(formCalories, 10);
     if (isNaN(calories) || calories < 0) {
-      Alert.alert('Invalid calories', 'Please enter a valid calorie number.');
+      showToast('Please enter a valid calorie number.');
       return;
     }
     if (editingMeal) {
@@ -58,16 +60,25 @@ export default function SavedMealsScreen() {
     setModalVisible(false);
   };
 
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2500);
+  };
+
   const handleDelete = (meal: Meal) => {
-    Alert.alert('Delete meal', `Remove "${meal.name}" from saved meals?`, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => deleteMeal(meal.id) },
-    ]);
+    setDeleteTarget(meal);
+  };
+
+  const confirmDelete = async () => {
+    if (deleteTarget) {
+      await deleteMeal(deleteTarget.id);
+      setDeleteTarget(null);
+    }
   };
 
   const handleLog = async (meal: Meal) => {
     await logMeal(meal);
-    Alert.alert('Logged!', `${meal.name} (${meal.calories} kcal) added to today's total.`);
+    showToast(`${meal.name} (${meal.calories} kcal) added to today's total.`);
   };
 
   const renderMeal = ({ item }: { item: Meal }) => (
@@ -145,6 +156,33 @@ export default function SavedMealsScreen() {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* Delete confirmation modal */}
+      <Modal visible={!!deleteTarget} animationType="fade" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalCard, { borderRadius: 20, padding: 24 }]}>
+            <Text style={styles.modalTitle}>Delete Meal</Text>
+            <Text style={{ fontSize: 15, color: '#555', marginBottom: 20 }}>
+              Remove "{deleteTarget?.name}" from saved meals?
+            </Text>
+            <View style={styles.modalActions}>
+              <TouchableOpacity style={[styles.modalBtn, styles.cancelBtn]} onPress={() => setDeleteTarget(null)}>
+                <Text style={styles.cancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#E53935' }]} onPress={confirmDelete}>
+                <Text style={styles.saveBtnText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Toast */}
+      {toastMsg && (
+        <View style={styles.toast}>
+          <Text style={styles.toastText}>{toastMsg}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -176,4 +214,6 @@ const styles = StyleSheet.create({
   cancelBtnText: { color: '#757575', fontWeight: '600' },
   saveBtn:       { backgroundColor: '#1976D2' },
   saveBtnText:   { color: '#fff', fontWeight: '600' },
+  toast:         { position: 'absolute', bottom: 30, alignSelf: 'center', backgroundColor: '#323232', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 24 },
+  toastText:     { color: '#fff', fontSize: 14 },
 });
