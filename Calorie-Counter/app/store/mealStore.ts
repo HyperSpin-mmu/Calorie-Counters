@@ -5,8 +5,11 @@ export type Meal = {
   id: string;
   name: string;
   calories: number;
-  servingSize?: string;
+  carbs: number;
+  protein: number;
+  fat: number;
 };
+
 
 export type LogEntry = {
   id: string;

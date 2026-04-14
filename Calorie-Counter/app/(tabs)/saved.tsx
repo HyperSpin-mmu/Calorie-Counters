@@ -17,6 +17,10 @@ export default function SavedMealsScreen() {
 
   const logSavedMeal = useDiaryStore((state) => state.logSavedMeal);
 
+  const [formCarbs, setFormCarbs] = useState('');
+  const [formProtein, setFormProtein] = useState('');
+  const [formFat, setFormFat] = useState('');
+
 
   useEffect(() => { loadFromStorage(); }, []);
 
@@ -24,7 +28,6 @@ export default function SavedMealsScreen() {
   const [editingMeal, setEditingMeal]   = useState<Meal | null>(null);
   const [formName,     setFormName]     = useState('');
   const [formCalories, setFormCalories] = useState('');
-  const [formServing,  setFormServing]  = useState('');
   const [deleteTarget, setDeleteTarget] = useState<Meal | null>(null);
   const [toastMsg,     setToastMsg]     = useState<string | null>(null);
 
@@ -32,7 +35,6 @@ export default function SavedMealsScreen() {
     setEditingMeal(null);
     setFormName('');
     setFormCalories('');
-    setFormServing('');
     setModalVisible(true);
   };
 
@@ -40,7 +42,11 @@ export default function SavedMealsScreen() {
     setEditingMeal(meal);
     setFormName(meal.name);
     setFormCalories(meal.calories.toString());
-    setFormServing(meal.servingSize ?? '');
+
+    setFormCarbs(meal.carbs?.toString() ?? '');
+    setFormProtein(meal.protein?.toString() ?? '');
+    setFormFat(meal.fat?.toString() ?? '');
+
     setModalVisible(true);
   };
 
@@ -56,12 +62,22 @@ export default function SavedMealsScreen() {
     }
     if (editingMeal) {
       await updateMeal(editingMeal.id, {
-        name: formName.trim(), calories, servingSize: formServing.trim() || undefined,
+        name: formName.trim(),
+        calories,
+        carbs: Number(formCarbs) || 0,
+        protein: Number(formProtein) || 0,
+        fat: Number(formFat) || 0,
       });
+
     } else {
-      await addMeal({
-        name: formName.trim(), calories, servingSize: formServing.trim() || undefined,
-      });
+        await addMeal({
+          name: formName.trim(),
+          calories,
+          carbs: Number(formCarbs) || 0,
+          protein: Number(formProtein) || 0,
+          fat: Number(formFat) || 0,
+        });
+
     }
     setModalVisible(false);
   };
@@ -92,9 +108,6 @@ export default function SavedMealsScreen() {
     <View style={styles.card}>
       <View style={styles.cardInfo}>
         <Text style={styles.mealName}>{item.name}</Text>
-        <Text style={styles.mealSub}>
-          {item.calories} kcal{item.servingSize ? `  ·  ${item.servingSize}` : ''}
-        </Text>
       </View>
       <View style={styles.cardActions}>
         <TouchableOpacity onPress={() => handleLog(item)} style={styles.iconBtn}>
@@ -149,8 +162,32 @@ export default function SavedMealsScreen() {
             <Text style={styles.label}>Calories (kcal) *</Text>
             <TextInput style={styles.input} placeholder="e.g. 450" value={formCalories} onChangeText={setFormCalories} keyboardType="numeric" />
 
-            <Text style={styles.label}>Serving Size (optional)</Text>
-            <TextInput style={styles.input} placeholder="e.g. 1 wrap, 100g" value={formServing} onChangeText={setFormServing} />
+            <Text style={styles.label}>Carbs (g)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g. 30"
+              value={formCarbs}
+              onChangeText={setFormCarbs}
+              keyboardType="numeric"
+            />
+
+            <Text style={styles.label}>Protein (g)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g. 20"
+              value={formProtein}
+              onChangeText={setFormProtein}
+              keyboardType="numeric"
+            />
+
+            <Text style={styles.label}>Fat (g)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g. 10"
+              value={formFat}
+              onChangeText={setFormFat}
+              keyboardType="numeric"
+            />
 
             <View style={styles.modalActions}>
               <TouchableOpacity style={[styles.modalBtn, styles.cancelBtn]} onPress={() => setModalVisible(false)}>

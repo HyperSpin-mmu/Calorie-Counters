@@ -19,9 +19,9 @@ export interface DiaryEntry {
   mealType: string;
   macros: {
     calories: number;
-    carbs: string;
-    protein: string;
-    fat: string;
+    carbs: number;
+    protein: number;
+    fat: number;
   };
   timestamp: string;
 }
@@ -62,9 +62,9 @@ export const useDiaryStore = create<DiaryState>()(persist((set) => ({
         mealType,
         macros: {
           calories: Number(meal.calories) || 0,
-          carbs: "0",
-          protein: "0",
-          fat: "0",
+          carbs: Number(meal.carbs) || 0,
+          protein: Number(meal.protein) || 0,
+          fat: Number(meal.fat) || 0,
         },
         timestamp: new Date().toISOString(),
       },
