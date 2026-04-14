@@ -112,10 +112,10 @@ export default function RootLayout() {
       <Tabs.Screen
         name="saved"
         options={{
-          title: 'Saved',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="bookmark" color={color} />,
+          href: null, // hides it from the tab bar
         }}
       />
+
 
       <Tabs.Screen
         name="settings"

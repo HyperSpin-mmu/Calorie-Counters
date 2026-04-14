@@ -95,15 +95,20 @@ export default function FoodDiaryScreen() {
       </SafeAreaView>
 
       <View style={styles.container}>
+
+        {/* Saved Meals Button */}
+        <View style={{ paddingHorizontal: 20, paddingTop: 15 }}>
+          <TouchableOpacity 
+            style={styles.savedButton}
+            onPress={() => router.navigate('/saved')}
+          >
+            <MaterialIcons name="bookmark" size={18} color="#fff" />
+            <Text style={styles.savedButtonText}>View Saved Meals</Text>
+          </TouchableOpacity>
+        </View>
+
         <SectionList
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Your diary is empty for today.</Text>
-              <TouchableOpacity style={styles.addBtn} onPress={() => router.navigate('/action')}>
-                <Text style={styles.addBtnText}>Scan a Food</Text>
-              </TouchableOpacity>
-            </View>
-          }
+
           sections={groupedEntries}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
@@ -238,4 +243,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 5,
   },
+  savedButton: {
+    backgroundColor: '#1976D2',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    alignItems: 'center',
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  savedButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+
 });
