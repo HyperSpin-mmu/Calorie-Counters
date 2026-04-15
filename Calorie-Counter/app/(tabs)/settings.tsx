@@ -4,6 +4,7 @@ import {
   TouchableOpacity, ScrollView, StyleSheet, Alert, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNotificationStore } from '../store/notificationStore';
 
@@ -11,6 +12,7 @@ import { useNotificationStore } from '../store/notificationStore';
 // Users can configure notification preferences and their daily calorie goal.
 
 export default function SettingsScreen() {
+  const router = useRouter();
 
   const {
     settings, hasPermission,
@@ -90,6 +92,16 @@ export default function SettingsScreen() {
       </SafeAreaView>
 
       <ScrollView contentContainerStyle={styles.scroll}>
+
+        {/* Go to Profile */}
+        <TouchableOpacity 
+          style={styles.profileBtn}
+          onPress={() => router.navigate('/profile')}
+        >
+          <MaterialIcons name="person" size={20} color="#1976D2" />
+          <Text style={styles.profileBtnText}>View Profile</Text>
+        </TouchableOpacity>
+        
 
         {/* Permission banner */}
         {!hasPermission && (
@@ -263,4 +275,21 @@ const styles = StyleSheet.create({
 
   disableAllBtn:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#FFCDD2', backgroundColor: '#FFF5F5' },
   disableAllText:     { color: '#E53935', fontWeight: '600', fontSize: 15 },
+  profileBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#BBDEFB',
+    backgroundColor: '#E3F2FD',
+  },
+  profileBtnText: {
+    color: '#1976D2',
+    fontWeight: '600',
+    fontSize: 15,
+  },
+
 });
