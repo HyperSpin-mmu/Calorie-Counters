@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  View,
+  ActivityIndicator,
+  Animated,
+  FlatList,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
-  FlatList,
-  StyleSheet,
-  ActivityIndicator,
-  Pressable,
-  Modal,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
   TouchableOpacity,
-  Animated,
+  View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type Product = {
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
   badgeLabel: { fontSize: 10, color: "#666", marginTop: 1 },
   perNote: { marginLeft: "auto", fontSize: 11, color: "#bbb", fontStyle: "italic" },
 
-  emptyState: { alignItems: "center", marginTop: 60, gap: 12 },
+  emptyState: {alignItems: "center", marginTop: 60, gap: 12 },
   emptyText: { fontSize: 15, color: "#bbb" },
   manualFallbackBtn: {
     marginTop: 4,

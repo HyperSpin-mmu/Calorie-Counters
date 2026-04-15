@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, SectionList, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useDiaryStore } from '../store/diaryStore';
+import { useRouter } from 'expo-router';
+import React, { useMemo } from 'react';
+import { SectionList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import Reanimated, { useAnimatedStyle, interpolate, Extrapolation } from 'react-native-reanimated';
+import Reanimated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDiaryStore } from '../store/diaryStore';
 
 
 const DeleteAction = ({ dragX, onDelete }: { dragX: any, onDelete: () => void }) => {
@@ -108,13 +108,23 @@ export default function FoodDiaryScreen() {
         </View>
 
         <SectionList
-
           sections={groupedEntries}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           renderSectionHeader={renderSectionHeader}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[styles.listContent, { flexGrow: 1 }]}
           stickySectionHeadersEnabled={false} 
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No food logged yet today.</Text>
+              <TouchableOpacity
+                style={styles.addBtn}
+                onPress={() => router.navigate('/action')}
+              >
+                <Text style={styles.addBtnText}>Scan a Barcode</Text>
+              </TouchableOpacity>
+            </View>
+          }
         />
       </View>
     </View>
@@ -244,7 +254,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   savedButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: '#007AFF',
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 30,
