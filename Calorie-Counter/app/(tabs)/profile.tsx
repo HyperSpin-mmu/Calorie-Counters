@@ -4,6 +4,8 @@ import { auth, db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
 
 export default function ProfileScreen() {
   const user = auth.currentUser;
@@ -26,12 +28,35 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
 
-      {/* Header (copied from SavedMeals) */}
-      <SafeAreaView style={styles.header} edges={['top']}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Profile</Text>
-        </View>
-      </SafeAreaView>
+    <SafeAreaView style={styles.header} edges={['top']}>
+    <View style={styles.headerContent}>
+
+        {/* Back Button (recycled from Search screen) */}
+        <TouchableOpacity 
+        style={styles.backButton} 
+        onPress={() => router.navigate('/')}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+        <MaterialIcons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+
+        <Text style={styles.headerTitle}>Profile</Text>
+    </View>
+    </SafeAreaView>
+
+    {/* Calorie Goal Card (static display) */}
+    <View style={styles.calorieCard}>
+    <View style={styles.rowLeft}>
+        <MaterialIcons name="flag" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Calorie Goal (kcal)</Text>
+    </View>
+
+    <Text style={styles.calorieValue}>
+        {profile?.calorieGoal ?? "—"}
+    </Text>
+    </View>
+
+
 
       {/* Content */}
       {user?.email && <Text style={styles.info}>Email: {user.email}</Text>}
@@ -108,4 +133,42 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontFamily: "GoogleSans",
   },
+  backButton: {
+  position: 'absolute',
+  left: 15,
+},calorieCard: {
+  backgroundColor: '#fff',
+  borderRadius: 14,
+  padding: 16,
+  width: '90%',
+  marginTop: 20,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  elevation: 1,
+  shadowColor: '#000',
+  shadowOpacity: 0.05,
+  shadowRadius: 4,
+  shadowOffset: { width: 0, height: 2 },
+},
+
+rowLeft: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: 10,
+},
+
+rowLabel: {
+  fontSize: 15,
+  color: '#212121',
+  fontWeight: '500',
+},
+
+calorieValue: {
+  fontSize: 18,
+  fontWeight: '700',
+  color: '#1976D2',
+},
+
+
 });

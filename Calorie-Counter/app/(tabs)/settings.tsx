@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNotificationStore } from '../store/notificationStore';
 
+
 // ─── Settings Screen ──────────────────────────────────────────────────────────
 // Users can configure notification preferences and their daily calorie goal.
 
@@ -87,9 +88,20 @@ export default function SettingsScreen() {
       {/* Header */}
       <SafeAreaView style={styles.header} edges={['top']}>
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Settings</Text>
+
+          {/* Back Button (recycled from Search screen) */}
+          <TouchableOpacity 
+            style={styles.backButton} 
+            onPress={() => router.navigate('/')}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="black" />
+          </TouchableOpacity>
+
+          <Text style={styles.headerTitle}>Profile</Text>
         </View>
       </SafeAreaView>
+
 
       <ScrollView contentContainerStyle={styles.scroll}>
 
@@ -111,24 +123,7 @@ export default function SettingsScreen() {
           </TouchableOpacity>
         )}
 
-        {/* ── Calorie Goal ── */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Daily Calorie Goal</Text>
 
-          <View style={styles.row}>
-            <View style={styles.rowLeft}>
-              <MaterialIcons name="flag" size={22} color="#1976D2" />
-              <Text style={styles.rowLabel}>Calorie Goal (kcal)</Text>
-            </View>
-            <TextInput
-              style={styles.goalInput}
-              value={settings.calorieGoal.toString()}
-              onChangeText={handleCalorieGoalChange}
-              keyboardType="numeric"
-              maxLength={5}
-            />
-          </View>
-        </View>
 
         {/* ── Calorie Alerts ── */}
         <View style={styles.section}>
@@ -290,6 +285,10 @@ const styles = StyleSheet.create({
     color: '#1976D2',
     fontWeight: '600',
     fontSize: 15,
-  },
+  },backButton: {
+  position: 'absolute',
+  left: 15,
+},
+
 
 });
