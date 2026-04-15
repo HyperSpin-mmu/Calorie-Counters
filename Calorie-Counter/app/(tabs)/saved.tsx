@@ -1,12 +1,18 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity,
-  FlatList, Modal, StyleSheet, KeyboardAvoidingView, Platform,
+  FlatList,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text, TextInput, TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useMealStore, Meal } from '../store/mealStore';
 import { useDiaryStore } from '../store/diaryStore';
+import { Meal, useMealStore } from '../store/mealStore';
 
 
 
@@ -130,6 +136,13 @@ export default function SavedMealsScreen() {
           <Text style={styles.headerTitle}>Saved Meals</Text>
           <TouchableOpacity onPress={openAddModal} style={styles.addBtn}>
             <MaterialIcons name="add" size={28} color="#1976D2" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -260,4 +273,5 @@ const styles = StyleSheet.create({
   saveBtnText:   { color: '#fff', fontWeight: '600' },
   toast:         { position: 'absolute', bottom: 30, alignSelf: 'center', backgroundColor: '#323232', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 24 },
   toastText:     { color: '#fff', fontSize: 14 },
+  backButton:    { position: 'absolute', left: 15,},
 });

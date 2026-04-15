@@ -1,11 +1,15 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import {
-  View, Text, Switch, TextInput,
-  TouchableOpacity, ScrollView, StyleSheet, Alert, Platform,
+  Alert,
+  ScrollView, StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNotificationStore } from '../store/notificationStore';
 
 
@@ -98,7 +102,7 @@ export default function SettingsScreen() {
             <MaterialIcons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
 
-          <Text style={styles.headerTitle}>Profile</Text>
+          <Text style={styles.headerTitle}>Settings</Text>
         </View>
       </SafeAreaView>
 
@@ -285,7 +289,8 @@ const styles = StyleSheet.create({
     color: '#1976D2',
     fontWeight: '600',
     fontSize: 15,
-  },backButton: {
+  },
+  backButton: {
   position: 'absolute',
   left: 15,
 },

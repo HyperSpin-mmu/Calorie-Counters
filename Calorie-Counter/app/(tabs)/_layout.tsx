@@ -1,10 +1,9 @@
-import { Tabs } from 'expo-router';
-import { useRouter } from 'expo-router';
-import { useFonts } from 'expo-font';
-import { useEffect } from 'react';
-import { View, TouchableOpacity} from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useFonts } from 'expo-font';
+import { Tabs, useRouter } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 
 
 //This is the button in the middle of the tab bar, it is used to navigate to the barcode scanner screen.
@@ -122,9 +121,7 @@ export default function RootLayout() {
           href: null, // hide from tab bar
         }}
       />
-
-
-
+      
       <Tabs.Screen
         name="settings"
         options={{
