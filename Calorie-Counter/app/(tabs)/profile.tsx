@@ -44,37 +44,131 @@ export default function ProfileScreen() {
     </View>
     </SafeAreaView>
 
-    {/* Calorie Goal Card (static display) */}
-    <View style={styles.calorieCard}>
-    <View style={styles.rowLeft}>
+   
+{/* Content */}
+{/* Account info */}
+<View style={styles.section}>
+  <Text>Account</Text>
+  {user?.email && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="email" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Email</Text>
+      </View>
+      <Text style={styles.calorieValue}>{user.email}</Text>
+    </View>
+  )}
+</View>
+
+{/* User info */}
+<View style={styles.section}>
+  <Text>User Details</Text>
+  {profile?.age && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="cake" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Age</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.age}</Text>
+    </View>
+  )}
+  {profile?.sex && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="person" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Sex</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.sex}</Text>
+    </View>
+  )}
+  {profile?.height && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="height" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Height</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.height} cm</Text>
+    </View>
+  )}
+  {profile?.weight && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="monitor-weight" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Weight</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.weight} kg</Text>
+    </View>
+  )}
+  {profile?.bmi && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="monitor-heart" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>BMI</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.bmi}</Text>
+    </View>
+  )}
+</View>
+
+{/* User goals */}
+<View style={styles.section}>
+  <Text>Goals</Text>
+  {profile?.motivation && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
         <MaterialIcons name="flag" size={22} color="#1976D2" />
-        <Text style={styles.rowLabel}>Calorie Goal (kcal)</Text>
+        <Text style={styles.rowLabel}>Motivation</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.motivation}</Text>
     </View>
-
-    <Text style={styles.calorieValue}>
-        {profile?.calorieGoal ?? "—"}
-    </Text>
+  )}
+  {profile?.activity && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="directions-run" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Activity Level</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.activity}</Text>
     </View>
-
-
-
-      {/* Content */}
-      {user?.email && <Text style={styles.info}>Email: {user.email}</Text>}
-      {profile?.motivation && <Text style={styles.info}>Motivation: {profile.motivation}</Text>}
-      {profile?.activity && <Text style={styles.info}>Activity Level: {profile.activity}</Text>}
-      {profile?.height && <Text style={styles.info}>Height: {profile.height} cm</Text>}
-      {profile?.weight && <Text style={styles.info}>Weight: {profile.weight} kg</Text>}
-      {profile?.age && <Text style={styles.info}>Age: {profile.age}</Text>}
-      {profile?.sex && <Text style={styles.info}>Sex: {profile.sex}</Text>}
-      {profile?.bmi && <Text style={styles.info}>BMI: {profile.bmi}</Text>}
-      {profile?.calorieGoal && (
-        <Text style={styles.info}>Calorie Goal: {profile.calorieGoal} kcal</Text>
-      )}
-      {profile?.proteinGoal && (
-        <Text style={styles.info}>Protein Goal: {profile.proteinGoal} g</Text>
-      )}
-      {profile?.fatGoal && <Text style={styles.info}>Fat Goal: {profile.fatGoal} g</Text>}
-      {profile?.carbGoal && <Text style={styles.info}>Carb Goal: {profile.carbGoal} g</Text>}
+  )}
+  {profile?.calorieGoal && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="local-fire-department" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Calorie Goal</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.calorieGoal} kcal</Text>
+    </View>
+  )}
+  {profile?.proteinGoal && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="set-meal" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Protein Goal</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.proteinGoal} g</Text>
+    </View>
+  )}
+  {profile?.fatGoal && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="water-drop" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Fat Goal</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.fatGoal} g</Text>
+    </View>
+  )}
+  {profile?.carbGoal && (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialIcons name="grain" size={22} color="#1976D2" />
+        <Text style={styles.rowLabel}>Carb Goal</Text>
+      </View>
+      <Text style={styles.calorieValue}>{profile.carbGoal} g</Text>
+    </View>
+  )}
+</View>
+      
 
       {/* Logout button */}
       <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
@@ -168,6 +262,27 @@ calorieValue: {
   fontSize: 18,
   fontWeight: '700',
   color: '#1976D2',
+},
+
+section: {
+  backgroundColor: '#fff',
+  borderRadius: 14,
+  padding: 16,
+  width: '90%',
+  marginTop: 20,
+  elevation: 1,
+  shadowColor: '#000',
+  shadowOpacity: 0.05,
+  shadowRadius: 4,
+  shadowOffset: { width: 0, height: 2 },
+},
+row: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingVertical: 8,
+  borderBottomWidth: 0.5,
+  borderBottomColor: '#f0f0f0',
 },
 
 

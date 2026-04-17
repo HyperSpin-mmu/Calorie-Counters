@@ -1,10 +1,9 @@
-import { useLocalSearchParams } from "expo-router";
-import { use, useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, Alert, TextInput, KeyboardAvoidingView, Platform } from "react-native";
-import { useRouter} from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { fetchFoodData } from "./services/api"; 
+import { fetchFoodData } from "./services/api";
 import { useDiaryStore } from "./store/diaryStore";
 
 
@@ -97,6 +96,7 @@ useEffect(() => {
       try {
         const result = await fetchFoodData(scannedData as string);
         setFoodData(result);
+        setUnit("serving"); 
       } catch (error) {
         console.error("Error loading food data:", error);
         setFoodData(null);
