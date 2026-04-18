@@ -31,13 +31,13 @@ const CAROUSEL_DATA: CarouselItem[] = [  // Sample data for the carousel, each i
     },
     {
         id: "02",
-        image: require("../../splash_assets/smile running.jpg"),
+        image: require("../../splash_assets/tt.jpg"),
         title: "Reach Your Goals",
         subtitle: "Set targets and watch your progress grow.",
     },
     {
         id: "03",
-        image: require("../../splash_assets/smile running.jpg"),
+        image: require("../../splash_assets/k.jpg"),
         title: "Stay Motivated",
         subtitle: "Healthy habits start with small steps.",
     },
