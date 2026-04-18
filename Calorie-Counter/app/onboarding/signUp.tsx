@@ -25,10 +25,12 @@ export default function Signup() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    // Added loading state to disable button and show spinner during async operations
 
     const handleSignup = async () => {
         if (!email || !password || !confirmPassword) {
             setError("Please fill in all fields");
+            // added check to ensure all fields are filled before attempting signup
             return;
         }
 
@@ -49,7 +51,7 @@ export default function Signup() {
             const w = Number(weight);
             const cals = Number(calorieGoal);
 
-            // Protein (g) - CHANGE: British spelling and context-aware targets
+            
             let proteinPerKg = 1.6;
             if (motivation === "lose") proteinPerKg = 2.0;
             if (motivation === "gain") proteinPerKg = 1.8;
@@ -88,7 +90,7 @@ export default function Signup() {
             // Navigate to main app
             router.replace("/(tabs)");
         } catch (err: any) {
-            // CHANGE: Friendlier error messages for Firebase codes
+            // Friendlier error messages for Firebase codes
             if (err.code === 'auth/email-already-in-use') {
                 setError("This email is already registered.");
             } else if (err.code === 'auth/weak-password') {
@@ -116,8 +118,10 @@ export default function Signup() {
                     >
                         <Text style={styles.backButtonText}>← Back</Text>
                     </TouchableOpacity>
+                    
 
                     <View style={styles.header}>
+
                         <Text style={styles.title}>Create Account</Text>
                         <Text style={styles.subtitle}>
                             Save your personalised plan and start tracking your progress.
@@ -162,7 +166,7 @@ export default function Signup() {
                             </View>
                         ) : null}
 
-                        {/* CHANGE: Branded primary button with loading indicator */}
+                        {/*  Branded primary button with loading indicator */}
                         <TouchableOpacity
                             style={[styles.primaryButton, loading && styles.buttonDisabled]}
                             onPress={handleSignup}
@@ -174,6 +178,13 @@ export default function Signup() {
                                 <Text style={styles.primaryButtonText}>Create Account</Text>
                             )}
                         </TouchableOpacity>
+                        {/* NEW: added terms and privacy text under the button */}
+                        <Text style={styles.termsText}>
+                            By creating an account, you agree to our{" "}
+                            <Text style={styles.link}>Terms</Text> and{" "}
+                            <Text style={styles.link}>Privacy Policy</Text>.
+                        </Text>
+
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -270,5 +281,17 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
         fontSize: 18,
         fontWeight: "700",
+    },
+    termsText: {
+        marginTop: 16,
+        fontSize: 12,
+        color: "#6B7280",
+        textAlign: "center",
+        paddingHorizontal: 10,
+        lineHeight: 18,
+    },
+    link: {
+        color: "#16A34A",
+        fontWeight: "600",
     },
 });
